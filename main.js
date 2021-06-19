@@ -4,6 +4,8 @@
 // example of an individual cat: https://cataas.com/cat/595f280e557291a9750ebf9f
 
 const catsGrid = document.querySelector('.cats-grid');
+const categoriesForm = document.querySelector('.categories-form');
+const ul = document.querySelector('ul');
 const apiUrl = 'https://cataas.com/api/cats';
 const apiRandom = 'https://cataas.com/cat';
 const maxCats = 8;
@@ -15,6 +17,56 @@ async function getCats() {
     return catsArray;
 };
 
+function fillCategoriesForm() {
+	getCats()
+		.then((data) => {
+			console.log(data.length)
+			console.log(data[0])
+			console.log(data)
+			let myTagsArray = [];
+
+			function createNewTagsArray() {
+				// let value = 0;
+				for (let i = 0; i <= maxCats; i++) {
+					// value+= 1;
+					// console.log(`It works ${value}`)
+					data[i].tags.forEach(e => myTagsArray.push(e))
+				}
+				myTagsArray.sort()
+				console.log(myTagsArray)
+				createCheckboxesForEachTag()
+			} createNewTagsArray()
+
+			function createCheckboxesForEachTag() {
+				myTagsArray.forEach(element => {
+
+					const newCheckBox = document.createElement('input');
+					newCheckBox.classList.add('tag-item')
+					newCheckBox.type = "checkbox";
+					newCheckBox.name = element;
+					newCheckBox.id = element;
+					console.log(newCheckBox)
+
+					const newLabel = document.createElement('label');
+					newLabel.for = element;
+					newLabel.innerText = ` ${element}`;
+					console.log(newLabel)
+
+					const newLi = document.createElement('li');
+					ul.appendChild(newLi);
+					newLi.appendChild(newCheckBox);
+					newLi.appendChild(newLabel)
+				})
+			}
+
+
+		})
+
+		.catch(error => console.error(error))
+
+}
+
+fillCategoriesForm()
 
 function fillCatsGrid() {
 	// setInterval(() => {
@@ -29,7 +81,9 @@ function fillCatsGrid() {
 		const catText = document.createElement('div');
 		catText.classList.add('cat-text');
 
-		newCat.appendChild(catImage); newCat.appendChild(catTitle); newCat.appendChild(catText);
+		newCat.appendChild(catImage); 
+		newCat.appendChild(catTitle); 
+		newCat.appendChild(catText);
 
 		getCats()
 			.then((data) => { 
@@ -52,7 +106,7 @@ function fillCatsGrid() {
 	// }, 1000)
 }
 
-fillCatsGrid()
+fillCatsGrid()	
 
 
 
