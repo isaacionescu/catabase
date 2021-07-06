@@ -170,7 +170,8 @@ input {
 	display: block;
 /*	display: flex;
 	flex-direction: row;*/
-	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 .tag-item {
