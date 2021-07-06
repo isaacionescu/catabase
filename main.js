@@ -3,15 +3,16 @@
 // JSON collection w/ filtering: https://cataas.com/api/cats?tags=cute
 // example of an individual cat: https://cataas.com/cat/595f280e557291a9750ebf9f
 
+const body = document.querySelector('body');
 const catsGrid = document.querySelector('.cats-grid');
 const categoriesForm = document.querySelector('.categories-form');
 const ul = document.querySelector('ul');
 const apiUrl = 'https://cataas.com/api/cats';
 const apiRandom = 'https://cataas.com/cat';
 
-const maxCats = 3
 let dynamicTagsArray = [];
-let fullImportedRawCatData = [];
+let fullCatData = [];
+const maxCats = 5
 /*console.log(`allRawCatData:`)
 console.log(allRawCatData)*/
 
@@ -26,9 +27,9 @@ function fillCategoriesForm() {
 	getCats()
 		.then((rawCatData) => {
 			let myTagsArray = [];
-			fullImportedRawCatData = rawCatData;
-			console.log(`allRawCatData:`)
-			console.log(fullImportedRawCatData)
+			fullCatData = rawCatData;
+			// console.log(`allRawCatData below:`)
+			// console.log(fullCatData)
 
 			function createNewTagsArray() {
 				for (let i = 0; i <= maxCats; i++) {
@@ -49,7 +50,7 @@ function fillCategoriesForm() {
 				myTagsArray.forEach(element => {
 					const newCheckBox = document.createElement('input');
 					// newCheckBox.innerHTML = `class="tag-item" type="checkbox" name="${element}" id="${element}"`
-					newCheckBox.classList.add('tag-item')
+					newCheckBox.classList.add('tag-item');
 					newCheckBox.type = "checkbox";
 					newCheckBox.name = element;
 					newCheckBox.id = element;
@@ -62,14 +63,10 @@ function fillCategoriesForm() {
 					const newLi = document.createElement('li');
 					ul.appendChild(newLi);
 					newLi.appendChild(newCheckBox);
-					newLi.appendChild(newLabel)
+					newLi.appendChild(newLabel);
 				})
-
-				fillCatsGrid()
-
-				document.addEventListener('click', event => {
-					filterResultsByTag()
-				})
+				// fillCatsGrid()
+				filterResultsByTag()
 			}
 		})
 		.catch(error => console.error(error))
@@ -78,25 +75,97 @@ fillCategoriesForm()
 
 
 function filterResultsByTag() {
-		let tagID = event.target.id;
+	document.addEventListener('click', event => {
+		let tag = event.target.id;
 		if(event.target.matches('.tag-item')) {
 			if (event.target.checked) {
-				console.log(`// This was selected: ${tagID}`)
-				dynamicTagsArray.push(tagID)
-				console.log(`dynamicTagsArray: [${dynamicTagsArray}]`)
+				console.log(`✅ Selected: ${tag}`)
+				dynamicTagsArray.push(tag)
+				preFilter(tag)
 			}
-
 			else if (!event.target.checked) {
-				console.log(`/ This was deselected: ${tagID}`)
-				dynamicTagsArray = dynamicTagsArray.filter(element => (element != tagID));
-				console.log(`dynamicTagsArray: ${dynamicTagsArray}`)
+				console.log(`❌ Deselected: ${tag}`)
+				dynamicTagsArray = dynamicTagsArray.filter(element => (element != tag));
+				filterRemove(tag)
 			}
+		console.log(`// Current dynamicTagsArray: [${dynamicTagsArray}]`)
 		}
-
-
-		// fillCatsGrid()
+	})
 }
-//  
+
+function filterRemove(tag) {
+	let allCatsOnDOM = document.getElementsByClassName(tag);
+	if(allCatsOnDOM.length > 0) {
+		console.log(allCatsOnDOM.length)
+		for (let i = 0; i < allCatsOnDOM.length; i++) {
+			const individualCat = document.querySelector(`.${tag}`)
+			individualCat.parentNode.removeChild(individualCat)
+		}
+	}
+}
+
+
+function preFilter(tagID) {
+	dynamicTagsArray.forEach(myTag => {
+		for(let i = 0; i < dynamicTagsArray.length; i++) {
+			fullCatData[i].tags.forEach(element => {
+				// console.log(tagID)
+				if(myTag === element) {
+					console.log(`MATCH!`)
+					filterAdd(fullCatData[i])
+				}
+			})
+		}
+	}) 
+}
+
+
+function filterAdd(catItem) {
+	// console.log(catItem)
+	getCats()
+		.then((data) => {
+			let newCat = document.createElement('div');
+			newCat.classList.add('cat-item');
+			newCat.id = `abc-${catItem.id}`;
+
+			catItem.tags.forEach(tag => {
+				newCat.classList.add(`${tag}`)
+			})
+			console.log(newCat.classList)
+
+			const catImage = document.createElement('div');
+			catImage.classList.add('cat-image');
+			const catTitle = document.createElement('div');
+			catTitle.classList.add('cat-title');
+			const catText = document.createElement('div');
+			catText.classList.add('cat-text');
+
+			catImage.style.background = `url(https://cataas.com/cat/${catItem.id}) 30% 40%`;
+			// catTitle.innerText = `Cat #${i + 1}`
+			catText.innerHTML = `Tags: <br>${catItem.tags}`
+
+			newCat.appendChild(catImage); 
+			newCat.appendChild(catTitle); 
+			newCat.appendChild(catText);
+			catsGrid.appendChild(newCat);
+		}
+	)
+		.catch(error => console.error(error))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function fillCatsGrid() {
@@ -133,12 +202,4 @@ function fillCatsGrid() {
 
 // fillCatsGrid()
 
-console.log('Test log')
-
-// function createCatSubcategories() {
-// 	return `
-// 		<div class="cat-picture"></div>
-// 		<div class="cat-title"></div>
-// 		<div class="cat-description"></div>
-// 	`
-// }
+// console.log('Test log')
