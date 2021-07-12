@@ -1,10 +1,9 @@
 // main site:                    https://cataas.com
 // JSON collection of all cats:  https://cataas.com/api/cats
 // JSON collection w/ filtering: https://cataas.com/api/cats?tags=cute
-// example of filtered tags:     https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
+// JSON of filtered tags:        https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
 // example of an individual cat: https://cataas.com/cat/595f280e557291a9750ebf9f
 
-const body = document.querySelector('body');
 const catsGrid = document.querySelector('.cats-grid');
 const categoriesForm = document.querySelector('.categories-form');
 const ul = document.querySelector('ul');
@@ -12,9 +11,9 @@ const baseUrl = 'https://cataas.com';
 const apiUrl = 'https://cataas.com/api/cats';
 const apiRandom = 'https://cataas.com/cat';
 
-let dynamicTagsArray = [];
-const maxCats = 10
 
+let dynamicTagsArray = [];
+const maxCats = 3
 
 async function getCats() {
     let response = await fetch(apiUrl);
@@ -26,25 +25,25 @@ async function getCats() {
 function fillCategoriesForm() {
 	getCats()
 		.then((rawCatData) => {
-			let myTagsArray = [];
+			let checkboxArray = [];
 
 			function createNewTagsArray() {
-				for (let i = 0; i <= maxCats; i++) {
-					rawCatData[i].tags.forEach(element => myTagsArray.push(element))
+				for (let i = 0; i < maxCats; i++) {
+					rawCatData[i].tags.forEach(element => checkboxArray.push(element))
 				}
-				myTagsArray = cleanUpAndSort(myTagsArray);
+				checkboxArray = cleanUpAndSort(checkboxArray);
 				createCheckboxesForEachTag()
 			}
 			createNewTagsArray()
 
 			function cleanUpAndSort(data) {
-				data = data.filter((value, index) => data.indexOf(value) === index);
-				data = data.sort();
+				data = data.filter((value, index) => data.indexOf(value) === index); // removes duplicates
+				data = data.sort(); // sorts the new array alphabetically
 				return data;
 			}
 
 			function createCheckboxesForEachTag() {
-				myTagsArray.forEach(element => {
+				checkboxArray.forEach(element => {
 					const newCheckBox = document.createElement('input');
 					newCheckBox.classList.add('tag-item');
 					newCheckBox.type = "checkbox";
@@ -65,6 +64,7 @@ function fillCategoriesForm() {
 				filterResultsByTag()
 			}
 		})
+		// .then(data => filterResultsByTag())
 		.catch(error => console.error(error))
 }
 fillCategoriesForm()
@@ -82,7 +82,7 @@ function filterResultsByTag() {
 				console.log(`❌ Deselected: ${tag}`)
 				dynamicTagsArray = dynamicTagsArray.filter(element => (element != tag));
 			}
-		console.log(`// Current dynamicTagsArray: [${dynamicTagsArray}]`)
+		// console.log(`// dynamicTagsArray: [${dynamicTagsArray}]`)
 		filterCats()
 		}
 	})
@@ -90,26 +90,26 @@ function filterResultsByTag() {
 
 
 function filterCats() {
-	// console.log(`// Current dynamicTagsArray: [${dynamicTagsArray}]`)
-	const allCatItems = document.getElementsByClassName('cat-item')
-	console.log(allCatItems)
+	console.log(`// dynamicTagsArray: [${dynamicTagsArray}]`)
 
-	let string = dynamicTagsArray.join(',');
+	let allCatItems = document.getElementsByClassName('cat-item');
+	// console.log(allCatItems)
+	for (let cat of allCatItems) {
+		cat.parentNode.removeChild(cat)
+	}
+
+	let urlString = dynamicTagsArray.join(',');
+
 	async function getFilteredCats() {
-		let response = await fetch(`${apiUrl}?tags=${string}&skip=0&limit=${maxCats}`);
+		let response = await fetch(`${apiUrl}?tags=${urlString}&skip=0&limit=${maxCats}`);
 		let promise = await response.json();
 		return promise;
 	}
 
 	getFilteredCats()
 		.then(catData => {
-		console.log(`// Current dynamicTagsArray: [${dynamicTagsArray}]`)
-
-			for (let cat of allCatItems) {
-				console.log(cat)
-				cat.parentNode.removeChild(cat)
-			}
-
+			console.log(`// Current dynamicTagsArray: [${dynamicTagsArray}]`)
+			console.log(`urlString: ${urlString}`)
 			console.log(catData)
 
 			for (let i = 0; i < catData.length; i++) {
@@ -132,6 +132,8 @@ function filterCats() {
 				newCat.appendChild(catText);
 				catsGrid.appendChild(newCat);
 			}
+
+
 		})
 	
 		.catch(error => console.error(error))
