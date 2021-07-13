@@ -13,7 +13,7 @@ const apiRandom = 'https://cataas.com/cat';
 
 
 let dynamicTagsArray = [];
-const maxCats = 3
+const maxCats = 5
 
 async function getCats() {
     let response = await fetch(apiUrl);
@@ -21,54 +21,47 @@ async function getCats() {
     return catsArray;
 };
 
-
-function fillCategoriesForm() {
+function fetchCatData() {
 	getCats()
 		.then((rawCatData) => {
-			let checkboxArray = [];
-
-			function createNewTagsArray() {
-				for (let i = 0; i < maxCats; i++) {
-					rawCatData[i].tags.forEach(element => checkboxArray.push(element))
-				}
-				checkboxArray = cleanUpAndSort(checkboxArray);
-				createCheckboxesForEachTag()
+			let tagsArray = [];
+			let catDataArray = [];
+			for (let i = 0; i < maxCats; i++) {
+				rawCatData[i].tags.forEach(element => tagsArray.push(element)); 
+				catDataArray.push(rawCatData[i])
 			}
-			createNewTagsArray()
+			console.log(catDataArray)
+			tagsArray = tagsArray.filter((value, index) => tagsArray.indexOf(value) === index);
+			tagsArray = tagsArray.sort();
 
-			function cleanUpAndSort(data) {
-				data = data.filter((value, index) => data.indexOf(value) === index); // removes duplicates
-				data = data.sort(); // sorts the new array alphabetically
-				return data;
-			}
-
-			function createCheckboxesForEachTag() {
-				checkboxArray.forEach(element => {
-					const newCheckBox = document.createElement('input');
-					newCheckBox.classList.add('tag-item');
-					newCheckBox.type = "checkbox";
-					newCheckBox.name = element;
-					newCheckBox.id = element;
-
-					const newLabel = document.createElement('label');
-					newLabel.for = element;
-					newLabel.id = element;
-					newLabel.innerText = ` ${element}`;
-
-					const newLi = document.createElement('li');
-					ul.appendChild(newLi);
-					newLi.appendChild(newCheckBox);
-					newLi.appendChild(newLabel);
-				})
-				// fillCatsGrid()
-				filterResultsByTag()
-			}
+			createCheckboxesForEachTag(tagsArray, catDataArray)
 		})
-		// .then(data => filterResultsByTag())
 		.catch(error => console.error(error))
 }
-fillCategoriesForm()
+fetchCatData()
 
+
+function createCheckboxesForEachTag(tagsArray, catDataArray) {
+	tagsArray.forEach(element => {
+		const newCheckBox = document.createElement('input');
+		newCheckBox.classList.add('tag-item');
+		newCheckBox.type = "checkbox";
+		newCheckBox.name = element;
+		newCheckBox.id = element;
+
+		const newLabel = document.createElement('label');
+		newLabel.for = element;
+		newLabel.id = element;
+		newLabel.innerText = ` ${element}`;
+
+		const newLi = document.createElement('li');
+		ul.appendChild(newLi);
+		newLi.appendChild(newCheckBox);
+		newLi.appendChild(newLabel);
+	})
+	// fillCatsGrid()
+	filterResultsByTag()
+}
 
 function filterResultsByTag() {
 	document.addEventListener('click', event => {
@@ -83,20 +76,22 @@ function filterResultsByTag() {
 				dynamicTagsArray = dynamicTagsArray.filter(element => (element != tag));
 			}
 		// console.log(`// dynamicTagsArray: [${dynamicTagsArray}]`)
-		filterCats()
+		changeDOMToReflectFilteredTags ()
 		}
 	})
 }
 
-
-function filterCats() {
+function changeDOMToReflectFilteredTags () {
 	console.log(`// dynamicTagsArray: [${dynamicTagsArray}]`)
 
 	let allCatItems = document.getElementsByClassName('cat-item');
-	// console.log(allCatItems)
+	console.log(allCatItems)
 	for (let cat of allCatItems) {
-		cat.parentNode.removeChild(cat)
+		cat.parentNode.removeChild(cat);
 	}
+
+	// allCatItems.style+= "display: none;";
+	// allCatItems.parentNode.removeChild(allCatItems)
 
 	let urlString = dynamicTagsArray.join(',');
 
@@ -132,8 +127,6 @@ function filterCats() {
 				newCat.appendChild(catText);
 				catsGrid.appendChild(newCat);
 			}
-
-
 		})
 	
 		.catch(error => console.error(error))
