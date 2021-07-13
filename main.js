@@ -1,27 +1,27 @@
-// main site:                    https://cataas.com
-// JSON collection of all cats:  https://cataas.com/api/cats
-// JSON collection w/ filtering: https://cataas.com/api/cats?tags=cute
-// JSON of filtered tags:        https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
-// example of an individual cat: https://cataas.com/cat/595f280e557291a9750ebf9f
+// main site:                      https://cataas.com
+// random cat:                     https://cataas.com/cat
+// JSON collection of all cats:    https://cataas.com/api/cats
+// JSON collection w/ filtering:   https://cataas.com/api/cats?tags=cute
+// JSON w/ advanced filtering:     https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
+// example of an individual cat:   https://cataas.com/cat/595f280e557291a9750ebf9f
 
 const catsGrid = document.querySelector('.cats-grid');
 const categoriesForm = document.querySelector('.categories-form');
 const ul = document.querySelector('ul');
 const baseUrl = 'https://cataas.com';
-const apiUrl = 'https://cataas.com/api/cats';
-const apiRandom = 'https://cataas.com/cat';
-
+const allCatsURL = 'https://cataas.com/api/cats';
+const oneCatURL = 'https://cataas.com/cat';
 
 let dynamicTagsArray = [];
 const maxCats = 5
 
-async function getCats() {
-    let response = await fetch(apiUrl);
-    let catsArray = await response.json();
-    return catsArray;
-};
-
 function fetchCatData() {
+	async function getCats() {
+	    let response = await fetch(allCatsURL);
+	    let catsArray = await response.json();
+	    return catsArray;
+	}
+
 	getCats()
 		.then((rawCatData) => {
 			let tagsArray = [];
@@ -30,6 +30,7 @@ function fetchCatData() {
 				rawCatData[i].tags.forEach(element => tagsArray.push(element)); 
 				catDataArray.push(rawCatData[i])
 			}
+			
 			console.log(catDataArray)
 			tagsArray = tagsArray.filter((value, index) => tagsArray.indexOf(value) === index);
 			tagsArray = tagsArray.sort();
@@ -96,7 +97,7 @@ function changeDOMToReflectFilteredTags () {
 	let urlString = dynamicTagsArray.join(',');
 
 	async function getFilteredCats() {
-		let response = await fetch(`${apiUrl}?tags=${urlString}&skip=0&limit=${maxCats}`);
+		let response = await fetch(`${allCatsURL}?tags=${urlString}&skip=0&limit=${maxCats}`);
 		let promise = await response.json();
 		return promise;
 	}
