@@ -13,7 +13,7 @@ const allCatsURL = 'https://cataas.com/api/cats';
 const oneCatURL = 'https://cataas.com/cat';
 
 let dynamicTagsArray = []; // this array will contain all currently selected tags, live
-const maxCats = 8 // universal higher ceiling of cats to be imported from the API in the first place
+const maxCats = 8 // global ceiling of cats to be used on our page
 
 async function fetchCats() {
     let response = await fetch(allCatsURL);
@@ -26,7 +26,7 @@ function manipulateImportedCatData() {
 	fetchCats()
 		.then((rawCatData) => {
 			let initialTagsArray = [];
-			let catItemsArray = [];
+			let catObjectsArray = [];
 
 			for (let i = 0; i < maxCats; i++) {
 				rawCatData[i].tags.forEach(element => initialTagsArray.push(element)); 
@@ -45,8 +45,8 @@ function manipulateImportedCatData() {
 				catText.id = catImage.id;
 
 				catImage.style.background = `url(https://cataas.com/cat/${rawCatData[i].id}) 30% 40%`;
-				catTitle.innerText = `experiment #${i + 1}`
-				catText.innerHTML = `Tags: <br>${rawCatData[i].tags}`
+				const stringifiedTags = rawCatData[i].tags.join(', ')
+				catText.innerHTML = `Tags: <br>${stringifiedTags}`
 
 				const newCatObject = {
 					"countId": i,
@@ -56,21 +56,21 @@ function manipulateImportedCatData() {
 					"catTitleDiv": catTitle,
 					"catTextDiv": catText
 				}
-				catItemsArray.push(newCatObject);
+				catObjectsArray.push(newCatObject);
 			}
 
 			initialTagsArray = initialTagsArray.filter((value, index) => initialTagsArray.indexOf(value) === index);
 			initialTagsArray = initialTagsArray.sort();
 
-			createCheckboxesForEachTag(initialTagsArray, catItemsArray)
-			applyChangesToDOM(catItemsArray);
+			createCheckboxesForEachTag(initialTagsArray, catObjectsArray)
+			applyChangesToDOM(catObjectsArray);
 		})
 		.catch(error => console.error(error))
 }
 manipulateImportedCatData()
 
 
-function createCheckboxesForEachTag(initialTagsArray, catItemsArray) {
+function createCheckboxesForEachTag(initialTagsArray, catObjectsArray) {
 	initialTagsArray.forEach(element => {
 		const newCheckBox = document.createElement('input');
 		newCheckBox.classList.add('tag-item');
@@ -88,12 +88,12 @@ function createCheckboxesForEachTag(initialTagsArray, catItemsArray) {
 		newLi.appendChild(newCheckBox);
 		newLi.appendChild(newLabel);
 	})
-	filterResultsByTag(catItemsArray)
+	filterResultsByTag(catObjectsArray)
 }
 
 
-function filterResultsByTag(catItemsArray) {
-	console.log(catItemsArray)
+function filterResultsByTag(catObjectsArray) {
+	console.log(catObjectsArray)
 	document.addEventListener('click', event => {
 		let tag = event.target.id;
 		if(event.target.matches('.tag-item')) {
@@ -105,13 +105,13 @@ function filterResultsByTag(catItemsArray) {
 				console.log(`❌ Deselected: ${tag}`)
 				dynamicTagsArray = dynamicTagsArray.filter(element => (element != tag));
 			}
-		applyChangesToDOM(catItemsArray)
+		applyChangesToDOM(catObjectsArray)
 		}
 	})
 }
 
 
-function applyChangesToDOM (catItemsArray) {
+function applyChangesToDOM (catObjectsArray) {
 	let allCatItems = document.getElementsByClassName('cat-item');
 	console.log(`allCatItems currently on the HTML DOM below:`)
 	console.log(allCatItems)
@@ -123,16 +123,16 @@ function applyChangesToDOM (catItemsArray) {
 
 	console.log(`dynamicTagsArray below:`)
 	console.log(dynamicTagsArray)
-	console.log(`catItemsArray below:`)
-	console.log(catItemsArray)
+	console.log(`catObjectsArray below:`)
+	console.log(catObjectsArray)
 
 	if(dynamicTagsArray.length > 0) { // if at least one box is checked
-		for (let i = 0; i < catItemsArray.length; i++) {
+		for (let i = 0; i < catObjectsArray.length; i++) {
 			console.log(`The ${i}th imported cat has the tags below:`)
-			console.log(catItemsArray[i].tags)
+			console.log(catObjectsArray[i].tags)
 
 			let isMatch = false;
-			catItemsArray[i].tags.forEach(importedTag => {
+			catObjectsArray[i].tags.forEach(importedTag => {
 
 				dynamicTagsArray.forEach(selectedTag => {
 					if(importedTag === selectedTag) {
@@ -145,15 +145,14 @@ function applyChangesToDOM (catItemsArray) {
 			})
 
 			if(isMatch) {
-				console.log(catItemsArray[i].catImageDiv)
+				console.log(catObjectsArray[i].catImageDiv)
 
 				const newCat = document.createElement('div');
 				newCat.classList.add('cat-item');
 
-				const catImage = catItemsArray[i].catImageDiv;
-				const catTitle = catItemsArray[i].catTitleDiv;
-				const catText = catItemsArray[i].catTextDiv;
-
+				const catImage = catObjectsArray[i].catImageDiv;
+				const catTitle = catObjectsArray[i].catTitleDiv;
+				const catText = catObjectsArray[i].catTextDiv;
 				catTitle.innerText = `Cat #${i + 1}`
 
 				newCat.appendChild(catImage); 
@@ -168,7 +167,7 @@ function applyChangesToDOM (catItemsArray) {
 
 	else { // if no box is currently checked
 		console.log(`😪 Currently, no boxes are checked`)
-		catItemsArray.forEach((item, index) => {
+		catObjectsArray.forEach((item, index) => {
 			const newCat = document.createElement('div');
 			newCat.classList.add('cat-item');
 
@@ -177,7 +176,6 @@ function applyChangesToDOM (catItemsArray) {
 			console.log(item.catTitleDiv)
 			const catTitle = item.catTitleDiv;
 			const catText = item.catTextDiv;
-
 			catTitle.innerText = `Cat #${index + 1}`
 
 			newCat.appendChild(catImage); 
