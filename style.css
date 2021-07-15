@@ -117,13 +117,14 @@ main {
 }
 
 .search-form {
-	width: 22%;
+	width: 30%;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 }
 
 input {
+	padding-left: 0.3rem;
 	border: 1px solid black;
 	border-radius: 5px;
 }
@@ -257,9 +258,12 @@ input[type="checkbox"] {
 
 footer {
 	background-color: var(--black);
+	margin: 0 auto;
+	/*padding: 0 auto;*/
+
+	vertical-align: middle;
 	height: 5vh;
 	width: 100vw;
 	color:  white;
 	text-align: center;
-	padding: auto;
 }
