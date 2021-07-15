@@ -116,7 +116,8 @@ function applyChangesToDOM (catObjectsArray) {
 	console.log(`allCatItems currently on the HTML DOM below:`)
 	console.log(allCatItems)
 	for (let cat of allCatItems) {
-		cat.parentNode.removeChild(cat);
+		// cat.parentNode.removeChild(cat);
+		cat.style.display = "none";
 	}
 	console.log(`...and after deletion from the DOM you have left:`)
 	console.log(allCatItems)
