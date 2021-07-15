@@ -12,38 +12,66 @@ const baseUrl = 'https://cataas.com';
 const allCatsURL = 'https://cataas.com/api/cats';
 const oneCatURL = 'https://cataas.com/cat';
 
-let dynamicTagsArray = [];
-const maxCats = 5
+let dynamicTagsArray = []; // this array will contain all currently selected tags, live
+const maxCats = 8 // universal higher ceiling of cats to be imported from the API in the first place
 
-function fetchCatData() {
-	async function getCats() {
-	    let response = await fetch(allCatsURL);
-	    let catsArray = await response.json();
-	    return catsArray;
-	}
+async function fetchCats() {
+    let response = await fetch(allCatsURL);
+    let catsArray = await response.json();
+    return catsArray;
+}
 
-	getCats()
+
+function manipulateImportedCatData() {
+	fetchCats()
 		.then((rawCatData) => {
-			let tagsArray = [];
-			let catDataArray = [];
-			for (let i = 0; i < maxCats; i++) {
-				rawCatData[i].tags.forEach(element => tagsArray.push(element)); 
-				catDataArray.push(rawCatData[i])
-			}
-			
-			console.log(catDataArray)
-			tagsArray = tagsArray.filter((value, index) => tagsArray.indexOf(value) === index);
-			tagsArray = tagsArray.sort();
+			let initialTagsArray = [];
+			let catItemsArray = [];
 
-			createCheckboxesForEachTag(tagsArray, catDataArray)
+			for (let i = 0; i < maxCats; i++) {
+				rawCatData[i].tags.forEach(element => initialTagsArray.push(element)); 
+
+				const newCat = document.createElement('div');
+				newCat.classList.add('cat-item');
+				const catImage = document.createElement('div');
+				catImage.classList.add('cat-image');
+				rawCatData[i].tags.forEach(tag => catImage.classList.add(tag))
+				catImage.id = rawCatData[i].id
+				const catTitle = document.createElement('div');
+				catTitle.classList.add('cat-title');
+				const catText = document.createElement('div');
+
+				catText.classList.add('cat-text');
+				catText.id = catImage.id;
+
+				catImage.style.background = `url(https://cataas.com/cat/${rawCatData[i].id}) 30% 40%`;
+				catTitle.innerText = `experiment #${i + 1}`
+				catText.innerHTML = `Tags: <br>${rawCatData[i].tags}`
+
+				const newCatObject = {
+					"countId": i,
+					"uniqueId": catImage.id,
+					"tags": rawCatData[i].tags,
+					"catImageDiv": catImage,
+					"catTitleDiv": catTitle,
+					"catTextDiv": catText
+				}
+				catItemsArray.push(newCatObject);
+			}
+
+			initialTagsArray = initialTagsArray.filter((value, index) => initialTagsArray.indexOf(value) === index);
+			initialTagsArray = initialTagsArray.sort();
+
+			createCheckboxesForEachTag(initialTagsArray, catItemsArray)
+			applyChangesToDOM(catItemsArray);
 		})
 		.catch(error => console.error(error))
 }
-fetchCatData()
+manipulateImportedCatData()
 
 
-function createCheckboxesForEachTag(tagsArray, catDataArray) {
-	tagsArray.forEach(element => {
+function createCheckboxesForEachTag(initialTagsArray, catItemsArray) {
+	initialTagsArray.forEach(element => {
 		const newCheckBox = document.createElement('input');
 		newCheckBox.classList.add('tag-item');
 		newCheckBox.type = "checkbox";
@@ -60,120 +88,106 @@ function createCheckboxesForEachTag(tagsArray, catDataArray) {
 		newLi.appendChild(newCheckBox);
 		newLi.appendChild(newLabel);
 	})
-	// fillCatsGrid()
-	filterResultsByTag()
+	filterResultsByTag(catItemsArray)
 }
 
-function filterResultsByTag() {
+
+function filterResultsByTag(catItemsArray) {
+	console.log(catItemsArray)
 	document.addEventListener('click', event => {
 		let tag = event.target.id;
 		if(event.target.matches('.tag-item')) {
-			if (event.target.checked) {
+			if (event.target.checked) { // if you select a checkbox
 				console.log(`✅ Selected: ${tag}`)
 				dynamicTagsArray.push(tag)
 			}
-			else if (!event.target.checked) {
+			else if (!event.target.checked) { // if you deselect a checkbox
 				console.log(`❌ Deselected: ${tag}`)
 				dynamicTagsArray = dynamicTagsArray.filter(element => (element != tag));
 			}
-		// console.log(`// dynamicTagsArray: [${dynamicTagsArray}]`)
-		changeDOMToReflectFilteredTags ()
+		applyChangesToDOM(catItemsArray)
 		}
 	})
 }
 
-function changeDOMToReflectFilteredTags () {
-	console.log(`// dynamicTagsArray: [${dynamicTagsArray}]`)
 
+function applyChangesToDOM (catItemsArray) {
 	let allCatItems = document.getElementsByClassName('cat-item');
+	console.log(`allCatItems currently on the HTML DOM below:`)
 	console.log(allCatItems)
 	for (let cat of allCatItems) {
 		cat.parentNode.removeChild(cat);
 	}
+	console.log(`...and after deletion from the DOM you have left:`)
+	console.log(allCatItems)
 
-	// allCatItems.style+= "display: none;";
-	// allCatItems.parentNode.removeChild(allCatItems)
+	console.log(`dynamicTagsArray below:`)
+	console.log(dynamicTagsArray)
+	console.log(`catItemsArray below:`)
+	console.log(catItemsArray)
 
-	let urlString = dynamicTagsArray.join(',');
+	if(dynamicTagsArray.length > 0) { // if at least one box is checked
+		for (let i = 0; i < catItemsArray.length; i++) {
+			console.log(`The ${i}th imported cat has the tags below:`)
+			console.log(catItemsArray[i].tags)
 
-	async function getFilteredCats() {
-		let response = await fetch(`${allCatsURL}?tags=${urlString}&skip=0&limit=${maxCats}`);
-		let promise = await response.json();
-		return promise;
-	}
+			let isMatch = false;
+			catItemsArray[i].tags.forEach(importedTag => {
 
-	getFilteredCats()
-		.then(catData => {
-			console.log(`// Current dynamicTagsArray: [${dynamicTagsArray}]`)
-			console.log(`urlString: ${urlString}`)
-			console.log(catData)
+				dynamicTagsArray.forEach(selectedTag => {
+					if(importedTag === selectedTag) {
+						isMatch = true;
+						console.log(`🎯 We have a tag match for "${selectedTag}"`)
+						return
+					}
+					else {console.log(`💢 We don't have any tags match for this pic`)}
+				})	
+			})
 
-			for (let i = 0; i < catData.length; i++) {
-				let newCat = document.createElement('div');
-				newCat.classList.add('cat-item');
-
-				const catImage = document.createElement('div');
-				catImage.classList.add('cat-image');
-				const catTitle = document.createElement('div');
-				catTitle.classList.add('cat-title');
-				const catText = document.createElement('div');
-				catText.classList.add('cat-text');
-
-				catImage.style.background = `url(https://cataas.com/cat/${catData[i].id}) 30% 40%`;
-				catTitle.innerText = `Cat #${i + 1}`
-				catText.innerHTML = `Tags: <br>${catData[i].tags}`
-
-				newCat.appendChild(catImage); 
-				newCat.appendChild(catTitle); 
-				newCat.appendChild(catText);
-				catsGrid.appendChild(newCat);
-			}
-		})
-	
-		.catch(error => console.error(error))
-}
-
-
-
-
-
-
-
-
-
-
-
-
-function fillCatsGrid() {
-	getCats()
-	.then((data) => {
-			for(let i = 0; i < maxCats; i++) {
-				// console.log(data[i])
+			if(isMatch) {
+				console.log(catItemsArray[i].catImageDiv)
 
 				const newCat = document.createElement('div');
 				newCat.classList.add('cat-item');
 
-				const catImage = document.createElement('div');
-				catImage.classList.add('cat-image');
-				const catTitle = document.createElement('div');
-				catTitle.classList.add('cat-title');
-				const catText = document.createElement('div');
-				catText.classList.add('cat-text');
+				const catImage = catItemsArray[i].catImageDiv;
+				const catTitle = catItemsArray[i].catTitleDiv;
+				const catText = catItemsArray[i].catTextDiv;
 
-
-				catImage.style.background = `url(https://cataas.com/cat/${data[i].id}) 30% 40%`;
 				catTitle.innerText = `Cat #${i + 1}`
-				catText.innerHTML = `Tags: <br>${data[i].tags}`
 
 				newCat.appendChild(catImage); 
 				newCat.appendChild(catTitle); 
 				newCat.appendChild(catText);
 				catsGrid.appendChild(newCat);
 			}
-			// console.log(data)
+
 		}
-	)
-	.catch(error => console.error(error))
+
+	}
+
+	else { // if no box is currently checked
+		console.log(`😪 Currently, no boxes are checked`)
+		catItemsArray.forEach((item, index) => {
+			const newCat = document.createElement('div');
+			newCat.classList.add('cat-item');
+
+			console.log(item.ImageDiv)
+			const catImage = item.catImageDiv;
+			console.log(item.catTitleDiv)
+			const catTitle = item.catTitleDiv;
+			const catText = item.catTextDiv;
+
+			catTitle.innerText = `Cat #${index + 1}`
+
+			newCat.appendChild(catImage); 
+			newCat.appendChild(catTitle); 
+			newCat.appendChild(catText);
+			catsGrid.appendChild(newCat);
+		}) 
+	}
 }
+
+
 
 // console.log('Test log')
