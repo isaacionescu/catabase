@@ -24,7 +24,7 @@ a:visited, a:active {
 	color: inherit;
 }
 
-a:focus, a:hover { color: var(--black); }
+a:focus, a:hover { color: var(--black); cursor: pointer; }
 
 textarea, input {
     outline: none;
@@ -114,6 +114,7 @@ main {
 	justify-content: center;
 	align-items: center;
 	/*margin-top: 10vh;*/
+	opacity: 0%;
 }
 
 .search-form {
@@ -139,14 +140,15 @@ input {
 
 
 
-.categories-section {
+.tags-section {
 	background-color: rgba(255, 255, 255, 200);
+	/*background-color: red;*/
 	/*opacity: 50%;*/
+	grid-row: 2 / 3;
+	grid-column: 1 / 3;
 	border: 1px solid black;
 	border-radius: 10px;
 	padding-top: 2vh;
-	grid-row: 2 / 3;
-	grid-column: 1 / 3;
 
 	justify-content: center;
 	align-items: center;
@@ -154,14 +156,22 @@ input {
 	/*height: 50px;*/
 }
 
-.categories-title {
+.tags-title {
 	/*background-color: red;*/
-	height: 10%;
+	height: 7%;
 	width: 100%;
 	text-align: center;
 }
 
-.categories-form {
+.tags-reset {
+	/*background-color: blue;*/
+	margin-left: 0.5rem;
+	width: 40%;
+	/*overflow: hidden;*/
+	/*content: grow;*/
+}
+
+.tags-form {
 	/*background-color: green;*/
 	width: 90%;
 	height: 80%;
@@ -171,15 +181,13 @@ input {
 	display: block;
 /*	display: flex;
 	flex-direction: row;*/
-	overflow-y: scroll;
+	overflow-y: auto;
 	overflow-x: hidden;
 }
 
 .tag-item {
 	height: 20px;
 	/*display: block;*/
-
-
 }
 
 
@@ -187,7 +195,9 @@ input[type="checkbox"] {
 	vertical-align: middle;
 }
 
-
+label {
+	font-size: 0.95rem;
+}
 
 
 
