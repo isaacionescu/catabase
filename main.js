@@ -79,7 +79,7 @@ function createCheckboxesForEachTag(initialTagsArray, catObjectsArray) {
 		newCheckBox.id = element;
 
 		const newLabel = document.createElement('label');
-		newLabel.for = element;
+		newLabel.setAttribute('for', element);
 		newLabel.id = element;
 		newLabel.innerText = ` ${element}`;
 
