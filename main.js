@@ -19,10 +19,6 @@ let allPossibleSelectedTags = []; // auxiliary variable, used to temporarily sto
 let allCards = [];
 let rangeCounter = 0;
 
-// rangeLabel.selected = maxCats
-// console.log(rangeLabel)
-// console.log(allRangeInputValues)
-
 
 async function fetchCats() {
 	const response = await fetch(allCatsURL);
@@ -34,34 +30,28 @@ async function doWork() {
 		// this gives us the first [maxCats] from the rawCats array
 		const rawCats = await fetchCats(); 
 
-		// this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
-		rangeLabel.innerHTML = "";
-
-		// then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
-		createValuesForDropdownMenu(rawCats.length)
-
-		// then we force the program to remember and keep the last applied value from the dropdown menu
-		let allRangeInputValues = document.querySelectorAll("option");
-		allRangeInputValues[maxCats].setAttribute('selected', true)
+		createDropdownLimiterMenu(rawCats.length)
 
 		// we set the ceiling limit for our local use - how many cats do we use for making tags, and for the cats grid, for now? (until otherwise requested)
 		const myCats = rawCats.slice(0, maxCats);
 
-		// we then pass this number to a function that does sorting and clean-up. The return value of that function we store inside the variable below to find out, what are all the tags the user is able select right now? (that number is later used in the "Select all" function)
+		// we then pass this number to a function that does sorting and clean-up through our limited cats' tags. The return value of that function we store inside the variable below, in order to find out what are all the tags the user is able select right now? (that number is later used for the "Select all" button)
 		allPossibleSelectedTags = configureTagsArray(myCats);
 
-		// we retrieve cat data (up to our ceiling), we generate divs for the image, title and text, and we store them inside this variable for later
+		// we retrieve cat data (up to our ceiling), we generate divs for the image, title and text, and we store them inside this variable for later use
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
 
 		// we add event listeners for different click events
 		document.body.addEventListener("click", onDocumentClick);
 
-		// finally, we render the cats on the DOM, with default settings, cause they need to be displayed anyway, prior to any future filtering
+		// finally, we render the cats on the DOM, with default settings (because they need to be displayed anyway, prior to any subsequent filtering)
 		renderCats();
 	} 
 	catch (error) { console.error(error) }
 };
 doWork();
+
+
 
 function onDocumentClick(event) {
 	if (event.target.matches(".checkbox-item")) {
@@ -93,7 +83,7 @@ function onDocumentClick(event) {
 		console.log(selectedTags)
 	}
 
-	// if you click on the range dropdown, use the inputted value to alter the maxCats state variable, and then reinitialize the whole page
+	// if you click on the range dropdown, use the inputted value to alter the maxCats state variable, and then reinitialize the whole DOM content
 	if (event.target.matches("#range-label")) {
 		// I didn't manage to make a distinction between simply opening the dropdown #range-label element, and selecting a specific <option> value,
 		// so I used this workaround as a patch. My program will accept the value only once every two clicks,
@@ -106,28 +96,36 @@ function onDocumentClick(event) {
 	renderCats()
 };
 
-function createValuesForDropdownMenu(maximumCats) {
-	for (let i = 0; i <= maximumCats; i++) {
+function generateValuesForDropdownMenu(totalCats) {
+	for (let i = 0; i <= totalCats; i++) {
 		const newRangeInput = document.createElement("option");
 		newRangeInput.setAttribute('value', i);
-		// rewRangeInput.id = `range-value-${i}`;
-		// newRangeInput.classList.add('range-value');
+		// newRangeInput.classList.add('range-value'); // this doesn't work for some reason
 		newRangeInput.innerHTML = i;
-		// console.log(allRangeInputValues[i])
-		// allRangeInputValues[i].setAttribute('selected', true)
 		rangeLabel.appendChild(newRangeInput)
 	}	
+}
 
+function createDropdownLimiterMenu(totalCats) {
+	// this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
+	rangeLabel.innerHTML = "";
+
+	// then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
+	generateValuesForDropdownMenu(totalCats)
+
+	// then we force the program to remember and stick to the last selected value from the dropdown menu
+	let allRangeInputValues = document.querySelectorAll("option");
+	allRangeInputValues[maxCats].setAttribute('selected', true)
 }
 
 function configureTagsArray(cats) {
 	// to-do: add a RegEx to compensate for the spacing tag issue starting from cat #14
 	const allTagsFromCats = cats.map((rawCat) => rawCat.tags).flat();
-	const initialTagsArray = [...new Set(allTagsFromCats)].sort();
+	const sortedTags = [...new Set(allTagsFromCats)].sort(); // removed duplicates + sorted alphabetically
 
 	hideAllVisibleCheckboxes()
-	initialTagsArray.forEach(createCheckboxes);
-	return initialTagsArray
+	sortedTags.forEach(createCheckboxes);
+	return sortedTags
 	// .map() does [[gif, funny], [box, gif]]
 	// .flat() does [gif, funny, box, gif]
 };
