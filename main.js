@@ -11,6 +11,7 @@ const catsGrid = document.querySelector(".cats-grid");
 const ul = document.querySelector("ul");
 let rangeLabel = document.querySelector("#range-label");
 let allCheckboxes = document.getElementsByClassName("checkbox-item");
+let allRangeInputValues = document.querySelectorAll("option")
  
 let maxCats = 8; // global ceiling of cats to be used for our tags, and to be displayed on our page
 let selectedTags = []; // this array will contain all currently selected tags, live
@@ -18,7 +19,9 @@ let allPossibleSelectedTags = []; // auxiliary variable, used to temporarily sto
 let allCards = [];
 let rangeCounter = 0;
 
-rangeLabel.val = maxCats // I tried to set a default value for the range
+// rangeLabel.selected = maxCats
+// console.log(rangeLabel)
+// console.log(allRangeInputValues)
 
 
 async function fetchCats() {
@@ -36,6 +39,10 @@ async function doWork() {
 
 		// then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
 		createValuesForDropdownMenu(rawCats.length)
+
+		// then we force the program to remember and keep the last applied value from the dropdown menu
+		let allRangeInputValues = document.querySelectorAll("option");
+		allRangeInputValues[maxCats].setAttribute('selected', true)
 
 		// we set the ceiling limit for our local use - how many cats do we use for making tags, and for the cats grid, for now? (until otherwise requested)
 		const myCats = rawCats.slice(0, maxCats);
@@ -100,14 +107,17 @@ function onDocumentClick(event) {
 };
 
 function createValuesForDropdownMenu(maximumCats) {
-	for (let i = 1; i <= maximumCats; i++) {
+	for (let i = 0; i <= maximumCats; i++) {
 		const newRangeInput = document.createElement("option");
 		newRangeInput.setAttribute('value', i);
 		// rewRangeInput.id = `range-value-${i}`;
 		// newRangeInput.classList.add('range-value');
 		newRangeInput.innerHTML = i;
+		// console.log(allRangeInputValues[i])
+		// allRangeInputValues[i].setAttribute('selected', true)
 		rangeLabel.appendChild(newRangeInput)
-	}
+	}	
+
 }
 
 function configureTagsArray(cats) {
