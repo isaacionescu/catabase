@@ -106,10 +106,24 @@ main {
 	/*align-items: center;*/
 }
 
+.range-section {
+	/*background-color: red;*/
+	grid-column: 1 / 3;
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	/*padding: 0.5rem;*/
+	/*margin: 0 auto;*/
+}
+
+.range-form {
+	/*margin: auto auto;*/
+}
+
 .search-section {
 	/*background-color: yellow;*/
 	/*border: 2px solid black;*/
-	grid-column: 1 / -1;
+	grid-column: 3 / -1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -130,23 +144,12 @@ input {
 	border-radius: 5px;
 }
 
-/*.search-form label {
-	color: pink;
-}*/
-
-
-
-
-
-
 
 .tags-section {
 	background-color: rgba(255, 255, 255, 200);
-	/*background-color: red;*/
-	/*opacity: 50%;*/
+	border: 1px solid black;
 	grid-row: 2 / 3;
 	grid-column: 1 / 3;
-	border: 1px solid black;
 	border-radius: 10px;
 	padding-top: 2vh;
 
@@ -163,16 +166,24 @@ input {
 	text-align: center;
 }
 
-.tags-reset {
+.tags-clear {
 	/*background-color: blue;*/
-	margin-left: 0.5rem;
+	margin-left: 0.3rem;
+	width: 90%;
 	width: 40%;
 	/*overflow: hidden;*/
-	/*content: grow;*/
+}
+
+.tags-all {
+	/*background-color: blue;*/
+	margin-left: 0.3rem;
+	width: 90%;
+	width: 40%;
 }
 
 .tags-form {
 	/*background-color: green;*/
+	margin-top: 1rem;
 	width: 90%;
 	height: 80%;
 	margin: 0 auto;
@@ -185,7 +196,7 @@ input {
 	overflow-x: hidden;
 }
 
-.tag-item {
+.checkbox-item {
 	height: 20px;
 	/*display: block;*/
 }

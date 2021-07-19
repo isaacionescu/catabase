@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>Catabase v. 1.22</title>
+	<title>Catabase v. 1.23</title>
 </head>
 
 <body>
@@ -19,6 +19,15 @@
 
 	<main>
 		<div class="grid">
+			<div class="range-section">
+				<form class="range-form">
+					<label for="range-label">Limit cats: </label>
+					<select name="number" id="range-label">
+						<!-- <option value="0" class="range-value">0</option> -->
+				</select>
+				</form>
+			</div>
+
 			<div class="search-section">
 				<form class="search-form">
 					<label for="search-label">Search (inactive)</label>
@@ -29,11 +38,12 @@
 
 			<div class="tags-section">
 				<div class="tags-title">Filter by tags!</div>
-				<p ><a class="tags-reset">Clear all</a></p>
+				<p ><a class="tags-clear">❌ Clear all</a></p>
+				<p ><a class="tags-all">✅ Select all</a></p>
 				<form class="tags-form">
 					<ul>
-<!-- 						<li>
-							<input class="tag-item" id="test" type="checkbox" name="test"></input>		
+<!-- 					<li>
+							<input class="checkbox-item" id="test" type="checkbox" name="test"></input>		
 							<label for="test">Test 1</label>
 						</li> -->
 					</ul>
