@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>Catabase v. 1.25</title>
+	<title>Catabase v. 1.26</title>
 </head>
 
 <body>
@@ -18,7 +18,8 @@
 	</header>
 
 	<main>
-		<div class="grid">
+		<div class="main-container">
+
 			<div class="range-section">
 				<form class="range-form">
 					<label for="range-label">Limit cats: </label>
@@ -32,6 +33,7 @@
 				</form>
 			</div>
 
+
 			<div class="search-section">
 				<form class="search-form">
 					<label for="search-label">Search (inactive)</label>
@@ -39,6 +41,7 @@
 					
 				</form>
 			</div>
+
 
 			<div class="tags-section">
 				<div class="tags-title">Filter by tags!</div>
@@ -54,16 +57,28 @@
 				</form>
 			</div>
 
+
 			<div class="cats-section">
-				<div class="cats-grid">
-					<!-- <div class="cat-item"></div> -->
-				</div>
+				<div class="scene" id="scene-1">
+					<div class="cats-grid">
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+						<div class="cat-item"></div>
+					</div>
+				</div>			
+				<div class="page-counter">Current page: </div>
 			</div>
+
 		</div>
 	</main>
 
 	<footer>
-		<p>© Isaac Ionescu 2021. Thanks to <a href="https://cataas.com" target="_blank">https://cataas.com</a> for providing a free public API for fetching content (tags and images of cats);</p>
+		<div>© Isaac Ionescu 2021. Thanks to <a href="https://cataas.com" target="_blank">https://cataas.com</a> for providing a free public API for fetching content (tags and images of cats);</div>
 	</footer>
 	
 <!-- </div> -->
