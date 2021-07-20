@@ -7,17 +7,27 @@
  
 const allCatsURL = "https://cataas.com/api/cats";
 
-const catsGrid = document.querySelector(".cats-grid");
+let catsSection = document.querySelector(".cats-section");
+let fixedFrame = document.querySelector(".fixed-frame")
 const unorderedList = document.querySelector("ul");
 let rangeLabel = document.querySelector("#range-label");
 let allCheckboxes = document.getElementsByClassName("checkbox-item");
-let allRangeInputValues = document.querySelectorAll("option")
+let allRangeInputValues = document.querySelectorAll("option");
+
+let allScenes;
+
+const firstPage = document.querySelector(".first-page");
+const prevPage = document.querySelector(".prev-page");
+let curPage = document.querySelector(".cur-page");
+let lastPage = document.querySelector(".last-page");
+const nextPage = document.querySelector(".next-page");
  
-let maxCats = 8; // global ceiling of cats to be used for our tags, and to be displayed on our page
+let maxCats = 13; // global ceiling of cats to be used for our tags, and to be displayed on our page
 let selectedTags = []; // this array will contain all currently selected tags, live
 let allPossibleSelectedTags = []; // auxiliary variable, used to temporarily store the max # of selected tags, for when the user "Selects all"
 let allCards = [];
-let counter = false;
+let currentIndex = 0;
+let counter = 0;
 
 
 async function fetchCats() {
@@ -41,6 +51,8 @@ async function doWork() {
 		document.body.addEventListener("click", onDocumentClick);
 		// finally, we render the cats on the DOM, with default settings (they need to be displayed anyway, prior to any subsequent filtering)
 		renderCats();
+		allScenes = document.getElementsByClassName('scene')
+
 	} 
 	catch (error) { console.error(error) }
 };
@@ -53,12 +65,15 @@ function onDocumentClick(event) {
 		// if you select a checkbox, add that corresponding tag to our dynamic array
 		if (event.target.checked) { 
 			selectedTags.push(tag);
+			renderCats()
+
 		}
 
 		// if you deselect a checkbox, remove corresponding that tag from our dynamic array
 		else if (!event.target.checked) { 
 			selectedTags = selectedTags.filter(element => element != tag);
 		}
+		renderCats()
 		console.log(selectedTags)
 	}
 
@@ -66,6 +81,7 @@ function onDocumentClick(event) {
 	if (event.target.matches(".tags-clear")) { 
 		selectedTags = [];
 		for (box of allCheckboxes) { box.checked = false };
+		renderCats()
 		console.log(selectedTags)
 	}
 
@@ -73,6 +89,7 @@ function onDocumentClick(event) {
 	if (event.target.matches(".tags-all")) {
 		selectedTags = allPossibleSelectedTags;
 		for (box of allCheckboxes) { box.checked = true };
+		renderCats()
 		console.log(selectedTags)
 	}
 
@@ -80,13 +97,20 @@ function onDocumentClick(event) {
 	if (event.target.matches("#range-label")) {
 		// I didn't manage to make a distinction between simply opening the dropdown #range-label element, and selecting a specific <option> value,
 		// so I used this workaround as a patch. First time you click (to open range) it does nothing, and all the next times it loads the value
-		console.log(counter)
-		maxCats = counter ? parseInt(event.target.value) : maxCats;
-		doWork()
-		counter = true;
+		// maxCats = counter % 2 ? parseInt(event.target.value) : maxCats;
+		if(counter % 2) {
+			maxCats = parseInt(event.target.value)
+			doWork()
+			console.log(counter)
+		};
+		counter++;
 	}
-	renderCats()
+
+	if(event.target.closest(".nav")) {
+		configureNavigationActions(event)
+	}
 };
+
 
 
 function createDropdownLimiterMenu(totalCats) {
@@ -146,43 +170,111 @@ function configureMyTagsArray(cats) {
 	};
  
 
+
+
+
+
+
+
+function configureNavigationActions(event) {
+	allScenes[currentIndex].style.display = "none";
+
+	if(event.target.matches(".next-page")) {
+		currentIndex = allScenes[currentIndex + 1] ? currentIndex + 1 : currentIndex;
+	}
+
+	if(event.target.matches(".prev-page")) {
+		currentIndex = allScenes[currentIndex - 1] ? currentIndex - 1 : currentIndex;
+	}
+
+	if(event.target.matches(".first-page")) {
+		currentIndex = 0;
+	}
+
+	if(event.target.matches(".last-page")) {
+		currentIndex = allScenes.length -1;
+	}
+
+	allScenes[currentIndex].style.display = "grid";
+	curPage.innerHTML = `  ${currentIndex + 1} `		
+}
+
  
 function renderCats() {
 	hideAllVisibleCats();
  	
  	// determine which of the cards to display on the DOM? See if each card contains any of the currently selected tags, and then decide.
-	const selectedCards = selectedTags.length 
+	let selectedCards = selectedTags.length 
 		? allCards.filter((cat) => 
 				cat.tags.some((tag) =>
 					selectedTags.find((selectedTag) => selectedTag === tag)
 			)
 		)
 		: allCards;
- 
-	selectedCards.forEach((cat) => addVisibleCatToGrid(cat));
+
+	let x = 4; let y = 1; let maxFit = x * y;
+	let totalScenes = (maxCats >= maxFit) ? parseInt(maxCats / maxFit)  : 1;
+	let remainder = (maxCats >= maxFit) ? maxCats - (totalScenes * maxFit) : maxCats;
+
+	hideAllVisibleScenes()
+	for (let i = 0; i <= totalScenes; i++) {
+		const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
+		selectedCards = [...selectedCards.slice(maxFit)]
+		const newScene = createNewScene(slicedCardsArray, i, x, y)
+		fixedFrame.appendChild(newScene)
+	}
+	curPage.innerHTML = `  ${1}`
+	// lastPage.innerHTML = `  ${remainder ? totalScenes + 1 : totalScenes}`
+	lastPage.innerHTML = `  ${(maxCats >= maxFit) ? totalScenes + 1 : 1}`
+
 }
 
-	function hideAllVisibleCats() {
-		let allCatItems = document.getElementsByClassName("cat-item");
+function hideAllVisibleScenes() {
+	fixedFrame.innerHTML = ""
+}
+
+function createNewScene(cards, i, x, y) {
+	const colors = ['red', 'orange', 'green', 'blue']
+
+	const newScene = document.createElement('div')
+	newScene.classList.add("scene")
+	newScene.id = `scene-${i+1}`;
+	// newScene.style.backgroundColor = colors[i]
+	newScene.style.display = i ? "none" : "grid"
+
+	newScene.style.gridTemplateColumns = `repeat(${x}, 17vw)`;
+	newScene.style.gridTemplateRows = `repeat(${y}, 17vw)`;
+
+	cards.forEach((card) => {
+		const newCard = addCardsToScene(card, newScene)
+		newScene.appendChild(newCard)
+	}
+	);
+	return newScene
+}
+	 
+function addCardsToScene(cat, newScene) {
+	// console.log(cat)
+	const newCard = document.createElement("div");
+	newCard.classList.add("cat-card");
+ 
+	const catImage = cat.catImageDiv;
+	const catTitle = cat.catTitleDiv;
+	const catText = cat.catTextDiv;
+	catTitle.innerText = `Cat #${cat.id}`;
+ 
+	newCard.appendChild(catImage);
+	newCard.appendChild(catTitle);
+	newCard.appendChild(catText);
+	return newCard
+}
+
+function hideAllVisibleCats() {
+	let allCatItems = document.getElementsByClassName("cat-card");
 		for (let cat of allCatItems) {
 			cat.style.display = "none";
 		}
-	}
-	 
-	function addVisibleCatToGrid(cat) {
-		const newCat = document.createElement("div");
-		newCat.classList.add("cat-item");
-	 
-		const catImage = cat.catImageDiv;
-		const catTitle = cat.catTitleDiv;
-		const catText = cat.catTextDiv;
-		catTitle.innerText = `Cat #${cat.id}`;
-	 
-		newCat.appendChild(catImage);
-		newCat.appendChild(catTitle);
-		newCat.appendChild(catText);
-		catsGrid.appendChild(newCat);
-	}
+}
  
 function createCards(data, i) {
 	const catImage = document.createElement("div");
