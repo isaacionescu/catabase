@@ -363,7 +363,7 @@ footer > div > a:hover { color: black; cursor: pointer; }
 
 
 /*MOBILE DEVICES*/
-@media (max-width: 700px) {
+@media (max-width: 500px) {
 	header {
 		background-color: yellow;
 	}
