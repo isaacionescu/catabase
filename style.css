@@ -92,6 +92,8 @@ main {
 	/*display: block;*/
 	display: flex;
 	justify-content: center;
+	overflow-y: auto;
+
 }
 
 .main-container {
@@ -108,8 +110,8 @@ main {
 }
 
 .range-section {
-	/*background-color: red;*/
-	grid-column: 1 / 3;
+	background-color: red;
+	grid-column: 1 / -1;
 	display: flex;
 	align-items: center;
 	justify-content: left;
@@ -121,16 +123,14 @@ main {
 	/*margin: auto auto;*/
 }
 
-.search-section {
-	/*background-color: yellow;*/
-	/*border: 2px solid black;*/
+/*.search-section {
+	background-color: yellow;
+	border: 2px solid black;
 	grid-column: 3 / -1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/*margin-top: 10vh;*/
-	opacity: 0%;
-}
+}*/
 
 .search-form {
 	width: 30%;
@@ -148,6 +148,9 @@ input {
 
 .tags-section {
 	background-color: rgba(255, 255, 255, 200);
+	background-color: green;
+
+	padding-bottom: 2rem;
 	border: 1px solid black;
 	grid-row: 2 / 3;
 	grid-column: 1 / 3;
@@ -213,7 +216,7 @@ label {
 
 .cats-section {
 	height: 100%;
-	/*background-color: pink;*/
+	background-color: pink;
 	/*border: 2px solid black;*/
 	grid-column: 3 / -1 ;
 	/*overflow: hidden;*/
@@ -340,3 +343,55 @@ footer > div {
 
 footer > div > a:focus,
 footer > div > a:hover { color: black; cursor: pointer; }
+
+
+.hamburger-icon {
+	/*display:  none;*/
+	/*background-color: cyan;*/
+	position: absolute;
+	left: 2.5vw;
+	font-size: 3rem;
+}
+
+.hamburger-menu {
+	/*display:  none;*/
+	background-color: cyan;
+	position: absolute;
+	left: 2.5vw;
+	font-size: 3rem;
+}
+
+
+/*MOBILE DEVICES*/
+@media (max-width: 700px) {
+	header {
+		background-color: yellow;
+	}
+
+	.main-container {
+
+	}
+
+	.range-section {
+		grid-column: 1 / 1;
+		display: none;
+	}
+
+	.tags-section {
+		grid-column: 1 / 2;
+		display: none;
+	}
+
+	.cats-section {
+		/*grid-column: 4 / -1;*/
+	}
+
+		.fixed-frame {
+			/*flex-direction: row;*/
+		}
+
+			.scene {
+			/*flex-direction: row;*/
+
+			}
+}

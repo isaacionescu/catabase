@@ -27,6 +27,7 @@ let allPossibleSelectedTags = []; // auxiliary variable, used to temporarily sto
 let allCards = [];
 let currentIndex = 0;
 let counter = 0;
+let screenSizeIsMobile = false;
 const colors = ['red', 'orange', 'green', 'blue'];
 
 
@@ -49,6 +50,8 @@ async function doWork() {
 		const myCats = rawCats.slice(0, maxCats);
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
+
+		checkScreenSize()
 		renderCats();
 		document.body.addEventListener("click", onDocumentClick);
 		allScenes = document.getElementsByClassName('scene')
@@ -56,6 +59,23 @@ async function doWork() {
 	catch (error) { console.error(error) }
 };
 doWork();
+
+function checkScreenSize() {
+		let mediaQuery = window.matchMedia('(max-width:700px)')
+		function onScreenSizeChange(event) {
+			if(event.matches) {
+				console.log(`It's mobile`)
+				screenSizeIsMobile = true;
+			}
+			else if (!event.matches) {
+				console.log(`It's the desktop`)
+				screenSizeIsMobile = false;
+			}
+			renderCats()
+		}
+		mediaQuery.addListener(onScreenSizeChange)
+		onScreenSizeChange(mediaQuery)
+}
 
 function onDocumentClick(event) {
 	if (event.target.matches(".checkbox-item")) {
@@ -68,21 +88,21 @@ function onDocumentClick(event) {
 				selectedTags = selectedTags.filter(element => element != tag);
 				break;
 		}
-		console.log(selectedTags)
+		// console.log(selectedTags)
 		renderCats()
 	}
 
 	if (event.target.matches(".tags-clear")) { 
 		selectedTags = [];
 		for (box of allCheckboxes) { box.checked = false };
-		console.log(selectedTags)
+		// console.log(selectedTags)
 		renderCats()
 	}
 
 	if (event.target.matches(".tags-all")) {
 		selectedTags = allPossibleSelectedTags;
 		for (box of allCheckboxes) { box.checked = true };
-		console.log(selectedTags)
+		// console.log(selectedTags)
 		renderCats()
 	}
 
@@ -191,33 +211,36 @@ function renderCats() {
 			)
 		)
 		: allCards;
-	console.log(`selectedTags:`)
-	console.log(selectedTags)
-	console.log(`selectedCards:`)
-	console.log(selectedCards)
+	// console.log(`selectedTags:`)
+	// console.log(selectedTags)
+	// console.log(`selectedCards:`)
+	// console.log(selectedCards)
 	let curCats = selectedCards.length
+	console.log(`And now is it mobile? ${screenSizeIsMobile}`)
 
 	// x = columns; y = rows;
 	let x = 4; let y = 1; let maxFit = x * y;  // 4
 	let totalScenes = (curCats > maxFit) ? parseInt(curCats / maxFit) : 1;
-	console.log(`totalScenes: ${totalScenes}`) // 3
+	// console.log(`totalScenes: ${totalScenes}`) // 3
 	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
-	console.log(`remainder: ${remainder}`)     // 1
+	// console.log(`remainder: ${remainder}`)     // 1
 
 	deleteAllVisibleScenes()
-	console.log(selectedCards.length)
+	// console.log(selectedCards.length)
 	// if(remainder > 0) {
 		for (let i = 0; i <= totalScenes; i++) {
 			const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
 			selectedCards = [...selectedCards.slice(maxFit)]
-			console.log(selectedCards)
+			// console.log(selectedCards)
 			// if(selectedCards.length > 0) {
-				console.log(`selectedCards wasn't empty this time!`)
+				// console.log(`selectedCards wasn't empty this time!`)
+
 				const newScene = createNewScene(slicedCardsArray, i, x, y)
 				fixedFrame.appendChild(newScene)
 			// }
 		} 
-	// }	
+	// }
+	curPage.innerHTML = `  1`
 	lastPage.innerHTML = `  ${(curCats > maxFit) ? totalScenes + 1 : 1}`
 }
 
@@ -230,10 +253,17 @@ function createNewScene(cards, i, x, y) {
 	newScene.classList.add("scene")
 	newScene.id = `scene-${i+1}`;
 	// newScene.style.backgroundColor = colors[i]
-	newScene.style.display = i ? "none" : "grid"
 
-	newScene.style.gridTemplateColumns = `repeat(${x}, 17vw)`;
-	newScene.style.gridTemplateRows = `repeat(${y}, 17vw)`;
+	if(!screenSizeIsMobile) {
+		newScene.style.display = i ? "none" : "grid"
+		newScene.style.gridTemplateColumns = `repeat(${x}, 17vw)`;
+		newScene.style.gridTemplateRows = `repeat(${y}, 17vw)`;	
+	}
+	else if (screenSizeIsMobile) {
+		newScene.style.display = i ? "none" : "grid"
+		newScene.style.gridTemplateColumns = `repeat(1, 20vw)`;
+		newScene.style.gridTemplateRows = `repeat(1, 20vw)`;
+	}
 
 	cards.forEach((card) => {
 		const newCard = addCardsToScene(card, newScene)
