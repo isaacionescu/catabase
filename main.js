@@ -7,13 +7,12 @@
  
 const allCatsURL = "https://cataas.com/api/cats";
 
-let catsSection = document.querySelector(".cats-section");
-let fixedFrame = document.querySelector(".fixed-frame")
-const unorderedList = document.querySelector("ul");
+const catsSection = document.querySelector(".cats-section");
+const fixedFrame = document.querySelector(".fixed-frame")
+let unorderedList = document.querySelector("ul");
 let rangeLabel = document.querySelector("#range-label");
-let allCheckboxes = document.getElementsByClassName("checkbox-item");
 let allRangeInputValues = document.querySelectorAll("option");
-
+let allCheckboxes = document.getElementsByClassName("checkbox-item");
 let allScenes;
 
 const firstPage = document.querySelector(".first-page");
@@ -28,6 +27,7 @@ let allPossibleSelectedTags = []; // auxiliary variable, used to temporarily sto
 let allCards = [];
 let currentIndex = 0;
 let counter = 0;
+const colors = ['red', 'orange', 'green', 'blue'];
 
 
 async function fetchCats() {
@@ -37,22 +37,21 @@ async function fetchCats() {
 
 async function doWork() {
 	try {
-		// this gives us all the imported cat content from the API
+		// 1. this gives us all the imported cat content from the API
+		// 2. we create a dropdown menu, providing the function with an argument equal to the total number of cats from the API
+		// 3. we set the ceiling limit for our local use - how many cats do we use for making tags, and for the cats grid (for now)?
+		// 4. we then pass this number to a function that creates our own local tags array and sorts it. The return value of that function we store inside the variable below, in order to find out what are all the tags the user is able to "Select all" right now?
+		// 5. we retrieve cat data (up to our ceiling), we generate divs for the image, title and text, and we store them inside this variable for later use
+		// 6. we add event listeners for different click events
+		// 7. finally, we render the cats on the DOM, with default settings (they need to be displayed anyway, prior to any subsequent filtering)
 		const rawCats = await fetchCats(); 
-		// we create a dropdown menu, providing the function with an argument equal to the total number of cats from the API
-		createDropdownLimiterMenu(rawCats.length)
-		// we set the ceiling limit for our local use - how many cats do we use for making tags, and for the cats grid (for now)?
+		createDropdownLimiterMenu(rawCats.length);
 		const myCats = rawCats.slice(0, maxCats);
-		// we then pass this number to a function that creates our own local tags array and sorts it. The return value of that function we store inside the variable below, in order to find out what are all the tags the user is able to "Select all" right now?
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
-		// we retrieve cat data (up to our ceiling), we generate divs for the image, title and text, and we store them inside this variable for later use
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
-		// we add event listeners for different click events
-		document.body.addEventListener("click", onDocumentClick);
-		// finally, we render the cats on the DOM, with default settings (they need to be displayed anyway, prior to any subsequent filtering)
 		renderCats();
+		document.body.addEventListener("click", onDocumentClick);
 		allScenes = document.getElementsByClassName('scene')
-
 	} 
 	catch (error) { console.error(error) }
 };
@@ -61,52 +60,43 @@ doWork();
 function onDocumentClick(event) {
 	if (event.target.matches(".checkbox-item")) {
 		const tag = event.target.id;
-		
-		// if you select a checkbox, add that corresponding tag to our dynamic array
-		if (event.target.checked) { 
-			selectedTags.push(tag);
-			renderCats()
-
+		switch (event.target.checked) {
+			case true:
+				selectedTags.push(tag);
+				break;
+			case false:
+				selectedTags = selectedTags.filter(element => element != tag);
+				break;
 		}
-
-		// if you deselect a checkbox, remove corresponding that tag from our dynamic array
-		else if (!event.target.checked) { 
-			selectedTags = selectedTags.filter(element => element != tag);
-		}
-		renderCats()
 		console.log(selectedTags)
+		renderCats()
 	}
 
-	// if you click on "Clear all", empty the array and clear all current checkboxes
 	if (event.target.matches(".tags-clear")) { 
 		selectedTags = [];
 		for (box of allCheckboxes) { box.checked = false };
-		renderCats()
 		console.log(selectedTags)
+		renderCats()
 	}
 
-	// if you click on "Select all", fill the array with all current tags and select all current checkboxes
 	if (event.target.matches(".tags-all")) {
 		selectedTags = allPossibleSelectedTags;
 		for (box of allCheckboxes) { box.checked = true };
-		renderCats()
 		console.log(selectedTags)
+		renderCats()
 	}
 
-	// if you click on the dropdown menu, use the inputted value to alter the maxCats state variable, then reinitialize the whole cat grid content
+	// If you click on the dropdown menu, use the inputted value to alter the maxCats state variable, then reinitialize the whole cat grid content
+	// I didn't manage to make a distinction between simply opening the dropdown #range-label element, and selecting a specific <option> value. So I used this workaround as a patch. First time you click (to open range) it does nothing, and every other time it does.
 	if (event.target.matches("#range-label")) {
-		// I didn't manage to make a distinction between simply opening the dropdown #range-label element, and selecting a specific <option> value,
-		// so I used this workaround as a patch. First time you click (to open range) it does nothing, and all the next times it loads the value
-		// maxCats = counter % 2 ? parseInt(event.target.value) : maxCats;
 		if(counter % 2) {
 			maxCats = parseInt(event.target.value)
 			doWork()
-			console.log(counter)
 		};
 		counter++;
 	}
 
-	if(event.target.closest(".nav")) {
+	if(event.target.matches(".nav")) {
 		configureNavigationActions(event)
 	}
 };
@@ -114,17 +104,17 @@ function onDocumentClick(event) {
 
 
 function createDropdownLimiterMenu(totalCats) {
-	// this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
+	// 1. this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
+	// 2. then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
+	// 3. then we force the program to remember and stick to the last selected value from the dropdown menu
 	rangeLabel.innerHTML = "";
-	// then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
 	generateValuesForDropdownMenu(totalCats)
-	// then we force the program to remember and stick to the last selected value from the dropdown menu
 	let allRangeInputValues = document.querySelectorAll("option");
 	allRangeInputValues[maxCats].setAttribute('selected', true)
 }
 
-	function generateValuesForDropdownMenu(totalCats) {
-		for (let i = 0; i <= totalCats; i++) {
+function generateValuesForDropdownMenu(totalCats) {
+		for (let i = 0; i < totalCats; i++) {
 			const newRangeInput = document.createElement("option");
 			newRangeInput.setAttribute('value', i);
 			// newRangeInput.classList.add('range-value'); // this doesn't work for some reason
@@ -137,20 +127,17 @@ function configureMyTagsArray(cats) {
 	// to-do: add a RegEx to compensate for the spacing tag issue starting from cat #14
 	const allTagsFromCats = cats.map((cat) => cat.tags).flat();
 	const sortedTags = [...new Set(allTagsFromCats)].sort(); // removed duplicates + sorted alphabetically
-	hideAllVisibleCheckboxes()
+	deleteAllVisibleCheckboxes()
 	sortedTags.forEach(createCheckboxes);
 	return sortedTags
 };
 
 
-	function hideAllVisibleCheckboxes()  {
-		let allListItems = document.getElementsByClassName("list-item");
-		for (let box of allListItems) {
-			box.style.display = "none";
-		}
+function deleteAllVisibleCheckboxes()  {
+		unorderedList.innerHTML = ""
 	}
 
-	function createCheckboxes(tag) {
+function createCheckboxes(tag) {
 		const newCheckBox = document.createElement("input");
 		newCheckBox.classList.add("checkbox-item");
 		newCheckBox.type = "checkbox";
@@ -171,28 +158,21 @@ function configureMyTagsArray(cats) {
  
 
 
-
-
-
-
-
 function configureNavigationActions(event) {
 	allScenes[currentIndex].style.display = "none";
-
-	if(event.target.matches(".next-page")) {
-		currentIndex = allScenes[currentIndex + 1] ? currentIndex + 1 : currentIndex;
-	}
-
-	if(event.target.matches(".prev-page")) {
-		currentIndex = allScenes[currentIndex - 1] ? currentIndex - 1 : currentIndex;
-	}
-
-	if(event.target.matches(".first-page")) {
-		currentIndex = 0;
-	}
-
-	if(event.target.matches(".last-page")) {
-		currentIndex = allScenes.length -1;
+	switch (event.target.id) {
+		case ("next-page"):
+			currentIndex = allScenes[currentIndex + 1] ? currentIndex + 1 : currentIndex;
+			break;	
+		case ("prev-page"):
+			currentIndex = allScenes[currentIndex - 1] ? currentIndex - 1 : currentIndex;
+			break;
+		case ("first-page"):
+			currentIndex = 0;
+			break;
+		case ("last-page"):
+			currentIndex = allScenes.length -1;
+			break;
 	}
 
 	allScenes[currentIndex].style.display = "grid";
@@ -201,7 +181,7 @@ function configureNavigationActions(event) {
 
  
 function renderCats() {
-	hideAllVisibleCats();
+	deleteAllVisibleCats();
  	
  	// determine which of the cards to display on the DOM? See if each card contains any of the currently selected tags, and then decide.
 	let selectedCards = selectedTags.length 
@@ -211,31 +191,41 @@ function renderCats() {
 			)
 		)
 		: allCards;
+	console.log(`selectedTags:`)
+	console.log(selectedTags)
+	console.log(`selectedCards:`)
+	console.log(selectedCards)
+	let curCats = selectedCards.length
 
-	let x = 4; let y = 1; let maxFit = x * y;
-	let totalScenes = (maxCats >= maxFit) ? parseInt(maxCats / maxFit)  : 1;
-	let remainder = (maxCats >= maxFit) ? maxCats - (totalScenes * maxFit) : maxCats;
+	// x = columns; y = rows;
+	let x = 4; let y = 1; let maxFit = x * y;  // 4
+	let totalScenes = (curCats > maxFit) ? parseInt(curCats / maxFit) : 1;
+	console.log(`totalScenes: ${totalScenes}`) // 3
+	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
+	console.log(`remainder: ${remainder}`)     // 1
 
-	hideAllVisibleScenes()
-	for (let i = 0; i <= totalScenes; i++) {
-		const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
-		selectedCards = [...selectedCards.slice(maxFit)]
-		const newScene = createNewScene(slicedCardsArray, i, x, y)
-		fixedFrame.appendChild(newScene)
-	}
-	curPage.innerHTML = `  ${1}`
-	// lastPage.innerHTML = `  ${remainder ? totalScenes + 1 : totalScenes}`
-	lastPage.innerHTML = `  ${(maxCats >= maxFit) ? totalScenes + 1 : 1}`
-
+	deleteAllVisibleScenes()
+	console.log(selectedCards.length)
+	// if(remainder > 0) {
+		for (let i = 0; i <= totalScenes; i++) {
+			const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
+			selectedCards = [...selectedCards.slice(maxFit)]
+			console.log(selectedCards)
+			// if(selectedCards.length > 0) {
+				console.log(`selectedCards wasn't empty this time!`)
+				const newScene = createNewScene(slicedCardsArray, i, x, y)
+				fixedFrame.appendChild(newScene)
+			// }
+		} 
+	// }	
+	lastPage.innerHTML = `  ${(curCats > maxFit) ? totalScenes + 1 : 1}`
 }
 
-function hideAllVisibleScenes() {
+function deleteAllVisibleScenes() {
 	fixedFrame.innerHTML = ""
 }
 
 function createNewScene(cards, i, x, y) {
-	const colors = ['red', 'orange', 'green', 'blue']
-
 	const newScene = document.createElement('div')
 	newScene.classList.add("scene")
 	newScene.id = `scene-${i+1}`;
@@ -269,11 +259,13 @@ function addCardsToScene(cat, newScene) {
 	return newCard
 }
 
-function hideAllVisibleCats() {
-	let allCatItems = document.getElementsByClassName("cat-card");
-		for (let cat of allCatItems) {
-			cat.style.display = "none";
-		}
+function deleteAllVisibleCats() {
+	let fixedFrame = document.getElementsByClassName("fixed-frame")
+	fixedFrame.innerHTML = "";
+	// let allCatItems = document.getElementsByClassName("cat-card");
+	// 	for (let cat of allCatItems) {
+	// 		cat.style.display = "none";
+	// 	}
 }
  
 function createCards(data, i) {
