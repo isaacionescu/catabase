@@ -120,7 +120,7 @@ main {
 }
 
 .range-section {
-	background-color: red;
+	/*background-color: red;*/
 	grid-column: 1 / -1;
 	display: flex;
 	align-items: center;
@@ -158,18 +158,20 @@ input {
 
 .tags-section {
 	background-color: rgba(255, 255, 255, 200);
-	background-color: green;
+	/*background-color: green;*/
+	/*border: 1px solid black;*/
 
 	padding-bottom: 2rem;
-	border: 1px solid black;
 	grid-row: 2 / 3;
 	grid-column: 1 / 3;
 	border-radius: 10px;
+
 	padding-top: 2vh;
 
-
-	justify-content: center;
-	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	/*align-items: center;*/
 	/*height: 50px;*/
 }
 
@@ -180,24 +182,19 @@ input {
 	text-align: center;
 }
 
-.tags-clear {
+.tags-clear-and-all {
 	/*background-color: blue;*/
-	margin-left: 0.3rem;
-	width: 90%;
-	width: 40%;
+	margin-left: 0.6rem;
+	width: 80%;
+
+	font-size: 1rem;
 	/*overflow: hidden;*/
 }
 
-.tags-all {
-	/*background-color: blue;*/
-	margin-left: 0.3rem;
-	width: 90%;
-	width: 40%;
-}
 
 .tags-form {
 	/*background-color: green;*/
-	margin-top: 1rem;
+	margin-top: 5vh;
 	width: 90%;
 	height: 80%;
 	margin: 0 auto;
@@ -226,8 +223,9 @@ label {
 
 .cats-section {
 	height: 100%;
-	background-color: pink;
+	/*background-color: pink;*/
 	/*border: 2px solid black;*/
+	border-radius: 10px;
 	grid-column: 3 / -1 ;
 	/*overflow: hidden;*/
 	/*overflow-y: hidden;*/
@@ -242,7 +240,7 @@ label {
 
 .fixed-frame {
 	/*background-color: black;*/
-	border: 2px solid black;
+	/*border: 2px solid black;*/
 	padding-top: 5%;
 	padding-bottom: 5%;
 
@@ -443,7 +441,7 @@ footer > div > a:hover { color: black; cursor: pointer; }
 		}
 		header {
 			/*position: absolute;*/
-			background-color: yellow;
+			/*background-color: yellow;*/
 			height: unset;
 			width: unset;
 
@@ -482,6 +480,8 @@ footer > div > a:hover { color: black; cursor: pointer; }
 			}
 
 			.range-section {
+				background-color: red;
+
 				/*grid-column: 1 / 1;*/
 				/*display: none;*/
 			}
