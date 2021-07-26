@@ -3,27 +3,30 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>Catabase v. 1.29.12</title>
+
+	<title>Catabase v. 1.29.13</title>
 </head>
 
 <body>
 
-	<header>
-		<div class="hamburger-icon">≡ v. 1.29.12</div>
-		<div class="hamburger-menu"></div>
+<div class="big-container">
+	<div class="sidebar">
+	</div>
 
-		<div class="title"><a href="index.html">😺 Catabase</a></div>
-<!-- 		<nav class="header-nav">
-				<span class="nav-items"><a href="">Browse cats</a></span>
-				<span class="nav-items"><a href="">Submit cat</a></span>		
-		</nav> -->
+	<header>
+		<div class="header-title"><a href="index.html">😺 Catabase</a></div>
+
+		<div class="hamburger-icon-div"><a class="hamburger-icon no-highlight">≡</a></div>
+	<!-- 		<nav class="header-nav">
+					<span class="nav-items"><a href="">Browse cats</a></span>
+					<span class="nav-items"><a href="">Submit cat</a></span>		
+			</nav> -->
 	</header>
 
 	<main>
 		<div class="main-container">
 
-
-			<div class="range-section">
+			<div class="range-section desktop-view">
 				<form class="range-form">
 					<label for="range-label">Limit cats: </label>
 					<select name="number" id="range-label">
@@ -32,7 +35,7 @@
 				</form>
 			</div>
 
-			<div class="tags-section">
+			<div class="tags-section desktop-view">
 				<div class="tags-title">Filter by tags!</div>
 				<p ><a class="tags-clear">❌ Clear all</a></p>
 				<p ><a class="tags-all">✅ Select all</a></p>
@@ -46,35 +49,20 @@
 				</form>
 			</div>
 
-
-
-<!-- 			<div class="search-section">
-				<form class="search-form">
-					<label for="search-label">Search (inactive)</label>
-					<input type="text" id="label"></input>
-					
-				</form>
-			</div> -->
-
-
-
 			<div class="cats-section">
 				<div class="fixed-frame">
-					<!-- <div class="scene scene-0" id="scene-0"> -->
-	<!-- 						<div class="cat-card"></div>
-							<div class="cat-card"></div>
-							<div class="cat-card"></div>
-							<div class="cat-card"></div> -->
-					<!-- </div>			 -->
+<!-- 				<div class="scene scene-0" id="scene-0">
+						<div class="cat-card"></div>
+					</div>	 -->		
 				</div>
-				<div class="navigation">
-					<p>Page:  </p>
-					<a class="first-page nav" id ="first-page">≪</a>  
-					<a class="prev-page nav" id ="prev-page"><</a>
-					<a class="cur-page nav" id ="cur-page">  1</a> /
-					<a class="last-page nav" id ="last-page"> </a>  
-					<a class="next-page nav" id ="next-page">></a>  
-					<a class="last-page nav" id ="last-page">≫ </a>  
+				<div class="navigation no-highlight">
+					<p class="no-highlight">Page:  </p>
+					<a class="first-page no-highlight nav" id ="first-page">≪</a>  
+					<a class="prev-page no-highlight nav" id ="prev-page"><</a>
+					<a class="cur-page no-highlight  nav" id ="cur-page">  1</a> /
+					<a class="last-page no-highlight nav" id ="last-page"> </a>  
+					<a class="next-page no-highlight nav" id ="next-page">></a>  
+					<a class="last-page no-highlight nav" id ="last-page">≫ </a>  
 				</div>
 			</div>
 
@@ -84,8 +72,13 @@
 	<footer>
 		<div>© Isaac Ionescu 2021. Thanks to <a href="https://cataas.com" target="_blank">https://cataas.com</a> for providing a free public API for fetching content (tags and images of cats);</div>
 	</footer>
-	
+</div>
 
+
+
+	
+	
 <script type="text/javascript" src="main.js"></script>
+
 </body>
 </html>

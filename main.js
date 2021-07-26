@@ -6,20 +6,20 @@
 // JSON w/ advanced filtering:     https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
  
 const allCatsURL = "https://cataas.com/api/cats";
-
 const catsSection = document.querySelector(".cats-section");
-const fixedFrame = document.querySelector(".fixed-frame")
-let unorderedList = document.querySelector("ul");
-let rangeLabel = document.querySelector("#range-label");
-let allRangeInputValues = document.querySelectorAll("option");
-let allCheckboxes = document.getElementsByClassName("checkbox-item");
+const fixedFrame = document.querySelector(".fixed-frame");
+const hamburgerMenu = document.querySelector(".hamburger-menu");
+let sidebar = document.querySelector(".sidebar");
+let hamburgerIcon;
+let	unorderedList;
+let	allCheckboxes;
 let allScenes;
 
 const firstPage = document.querySelector(".first-page");
 const prevPage = document.querySelector(".prev-page");
+const nextPage = document.querySelector(".next-page");
 let curPage = document.querySelector(".cur-page");
 let lastPage = document.querySelector(".last-page");
-const nextPage = document.querySelector(".next-page");
  
 let maxCats = 13; // global ceiling of cats to be used for our tags, and to be displayed on our page
 let selectedTags = []; // this array will contain all currently selected tags, live
@@ -38,6 +38,7 @@ async function fetchCats() {
 
 async function doWork() {
 	try {
+	let explanationComment =  {
 		// 1. this gives us all the imported cat content from the API
 		// 2. we create a dropdown menu, providing the function with an argument equal to the total number of cats from the API
 		// 3. we set the ceiling limit for our local use - how many cats do we use for making tags, and for the cats grid (for now)?
@@ -45,14 +46,20 @@ async function doWork() {
 		// 5. we retrieve cat data (up to our ceiling), we generate divs for the image, title and text, and we store them inside this variable for later use
 		// 6. we add event listeners for different click events
 		// 7. finally, we render the cats on the DOM, with default settings (they need to be displayed anyway, prior to any subsequent filtering)
+	}
+		checkScreenSize()
+		hamburgerIcon = document.querySelector(".hamburger-icon");
+		console.log(hamburgerIcon)
 		const rawCats = await fetchCats(); 
+
 		createDropdownLimiterMenu(rawCats.length);
 		const myCats = rawCats.slice(0, maxCats);
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
+		allCheckboxes = document.getElementsByClassName("checkbox-item");
 
-		checkScreenSize()
 		renderCats();
+
 		document.body.addEventListener("click", onDocumentClick);
 		allScenes = document.getElementsByClassName('scene')
 	} 
@@ -61,14 +68,15 @@ async function doWork() {
 doWork();
 
 function checkScreenSize() {
-		let mediaQuery = window.matchMedia('(max-width:1000px)')
+		let mediaQuery = window.matchMedia('(max-width:600px)')
 		function onScreenSizeChange(event) {
 			if(event.matches) {
 				console.log(`It's mobile`)
 				screenSizeIsMobile = true;
+
 			}
 			else if (!event.matches) {
-				console.log(`It's the desktop`)
+				console.log(`It's desktop`)
 				screenSizeIsMobile = false;
 			}
 			renderCats()
@@ -77,8 +85,20 @@ function checkScreenSize() {
 		onScreenSizeChange(mediaQuery)
 }
 
+function showSidebar() {
+	sidebar.classList.toggle("make-visible");
+
+}
+
+
 function onDocumentClick(event) {
-	if (event.target.matches(".checkbox-item")) {
+	if(event.target.matches(".hamburger-icon")) {
+		console.log(`Hamburger click`);
+		showSidebar()
+	}
+
+
+	if (event.target.closest(".checkbox-item")) {
 		const tag = event.target.id;
 		switch (event.target.checked) {
 			case true:
@@ -88,21 +108,18 @@ function onDocumentClick(event) {
 				selectedTags = selectedTags.filter(element => element != tag);
 				break;
 		}
-		// console.log(selectedTags)
 		renderCats()
 	}
 
 	if (event.target.matches(".tags-clear")) { 
 		selectedTags = [];
 		for (box of allCheckboxes) { box.checked = false };
-		// console.log(selectedTags)
 		renderCats()
 	}
 
 	if (event.target.matches(".tags-all")) {
 		selectedTags = allPossibleSelectedTags;
 		for (box of allCheckboxes) { box.checked = true };
-		// console.log(selectedTags)
 		renderCats()
 	}
 
@@ -127,20 +144,21 @@ function createDropdownLimiterMenu(totalCats) {
 	// 1. this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
 	// 2. then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
 	// 3. then we force the program to remember and stick to the last selected value from the dropdown menu
+	let	rangeLabel = document.querySelector("#range-label");
 	rangeLabel.innerHTML = "";
-	generateValuesForDropdownMenu(totalCats)
-	let allRangeInputValues = document.querySelectorAll("option");
+	generateValuesForDropdownMenu(totalCats, rangeLabel)
+	let	allRangeInputValues = document.querySelectorAll("option");
 	allRangeInputValues[maxCats].setAttribute('selected', true)
 }
 
-function generateValuesForDropdownMenu(totalCats) {
+function generateValuesForDropdownMenu(totalCats, rangeLabel) {
 		for (let i = 0; i < totalCats; i++) {
-			const newRangeInput = document.createElement("option");
-			newRangeInput.setAttribute('value', i);
-			// newRangeInput.classList.add('range-value'); // this doesn't work for some reason
-			newRangeInput.innerHTML = i;
-			rangeLabel.appendChild(newRangeInput)
-		}	
+			const newValueInput = document.createElement("option");
+			newValueInput.setAttribute('value', i);
+			newValueInput.innerHTML = i;
+			rangeLabel.appendChild(newValueInput)
+		}
+
 	}
 
 function configureMyTagsArray(cats) {
@@ -154,6 +172,7 @@ function configureMyTagsArray(cats) {
 
 
 function deleteAllVisibleCheckboxes()  {
+		unorderedList = document.querySelector("ul");
 		unorderedList.innerHTML = ""
 	}
 
@@ -219,16 +238,15 @@ function renderCats() {
 	console.log(`And now is it mobile? ${screenSizeIsMobile}`)
 
 	// x = columns; y = rows;
-	let x = 4; let y = 1; let maxFit = x * y;  // 4
+	let x = 4; let y = 1; let maxFit = x * y;
 	let totalScenes = (curCats > maxFit) ? parseInt(curCats / maxFit) : 1;
-	// console.log(`totalScenes: ${totalScenes}`) // 3
 	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
-	// console.log(`remainder: ${remainder}`)     // 1
+
 
 	deleteAllVisibleScenes()
 	// console.log(selectedCards.length)
 	// if(remainder > 0) {
-		for (let i = 0; i <= totalScenes; i++) {
+	for (let i = 0; i <= totalScenes; i++) {
 			const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
 			selectedCards = [...selectedCards.slice(maxFit)]
 			// console.log(selectedCards)
@@ -236,9 +254,22 @@ function renderCats() {
 				// console.log(`selectedCards wasn't empty this time!`)
 
 				const newScene = createNewScene(slicedCardsArray, i, x, y)
+				newScene.style.display = i ? "none" : "grid"
+
+				switch(screenSizeIsMobile) {
+					case true:
+						newScene.style.gridTemplateColumns = `repeat(1, 40vw)`;
+						newScene.style.gridTemplateRows = `repeat(4, 40vw)`;
+						break;
+					case false:
+						newScene.style.gridTemplateColumns = `repeat(${x}, 17vw)`;
+						newScene.style.gridTemplateRows = `repeat(${y}, 17vw)`;	
+						break
+				}
+
 				fixedFrame.appendChild(newScene)
 			// }
-		} 
+	} 
 	// }
 	curPage.innerHTML = `  1`
 	lastPage.innerHTML = `  ${(curCats > maxFit) ? totalScenes + 1 : 1}`
@@ -253,17 +284,6 @@ function createNewScene(cards, i, x, y) {
 	newScene.classList.add("scene")
 	newScene.id = `scene-${i+1}`;
 	// newScene.style.backgroundColor = colors[i]
-
-	if(!screenSizeIsMobile) {
-		newScene.style.display = i ? "none" : "grid"
-		newScene.style.gridTemplateColumns = `repeat(${x}, 17vw)`;
-		newScene.style.gridTemplateRows = `repeat(${y}, 17vw)`;	
-	}
-	else if (screenSizeIsMobile) {
-		newScene.style.display = i ? "none" : "grid"
-		newScene.style.gridTemplateColumns = `repeat(1, 20vw)`;
-		newScene.style.gridTemplateRows = `repeat(1, 20vw)`;
-	}
 
 	cards.forEach((card) => {
 		const newCard = addCardsToScene(card, newScene)
@@ -311,6 +331,8 @@ function createCards(data, i) {
 	catText.id = catImage.id;
  
 	catImage.style.background = `url(https://cataas.com/cat/${data.id}) 30% 40%`;
+	// catImage.style.background = "blue";
+
 	catText.innerHTML = `Tags: <br>${data.tags.join(", ")}`;
  
 	return {
