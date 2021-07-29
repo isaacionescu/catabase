@@ -9,7 +9,12 @@ const allCatsURL = "https://cataas.com/api/cats";
 const catsSection = document.querySelector(".cats-section");
 const fixedFrame = document.querySelector(".fixed-frame");
 const hamburgerMenu = document.querySelector(".hamburger-menu");
+
+let header = document.querySelector('header');
+let main = document.querySelector('main');
+let footer = document.querySelector('footer');
 let sidebar = document.querySelector(".sidebar");
+
 let hamburgerIcon;
 let	unorderedList;
 let	allCheckboxes;
@@ -28,6 +33,7 @@ let allCards = [];
 let currentIndex = 0;
 let counter = 0;
 let screenSizeIsMobile = false;
+let sidebarIsOpen = false;
 const colors = ['red', 'orange', 'green', 'blue'];
 
 
@@ -49,7 +55,6 @@ async function doWork() {
 	}
 		checkScreenSize()
 		hamburgerIcon = document.querySelector(".hamburger-icon");
-		console.log(hamburgerIcon)
 		const rawCats = await fetchCats(); 
 
 		createDropdownLimiterMenu(rawCats.length);
@@ -87,16 +92,30 @@ function checkScreenSize() {
 
 function showSidebar() {
 	sidebar.classList.toggle("make-visible");
-
+	header.classList.toggle("make-dark");
+	main.classList.toggle("make-dark");
+	footer.classList.toggle("make-dark");
 }
 
 
 function onDocumentClick(event) {
 	if(event.target.matches(".hamburger-icon")) {
-		console.log(`Hamburger click`);
+		console.log(`Hamburger was clicked`);
 		showSidebar()
+		sidebarIsOpen = !sidebarIsOpen
 	}
 
+	if(event.target.matches('header')) {
+		console.log(`Header was clicked`);
+	}
+
+	if(event.target.matches('main')) {
+		console.log(`Main was clicked`);
+	}
+
+	if(event.target.matches('footer')) {
+		console.log(`footer was clicked`);
+	}
 
 	if (event.target.closest(".checkbox-item")) {
 		const tag = event.target.id;

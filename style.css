@@ -374,27 +374,35 @@ footer > div > a:hover { color: black; cursor: pointer; }
 	font-size: 3rem;
 }
 
-.mobile-view {
+/*.mobile-view {
 	display: none;
-}
+}*/
 
 .sidebar {
 	display: none;
 }
 
-.sidebar:focus, .sidebar:hover { color: var(--darkgrey); cursor: pointer; }
-
+.sidebar:focus, .sidebar:hover { 
+	color: var(--darkgrey); cursor: pointer; 
+}
 
 .make-visible {
 	display: initial;
 }
 
+.make-dark {
+	filter: brightness(0.5);
+}
 
 
 /*MOBILE DEVICES*/
 @media (max-width: 999px) {
 	.desktop-view {
 		display: none;
+	}
+
+	.mobile-view {
+		display: initial;
 	}
 
 	.hamburger-icon-div {
@@ -406,13 +414,9 @@ footer > div > a:hover { color: black; cursor: pointer; }
 	.hamburger-icon {
 		/*background-color: cyan;*/
 		display: block;
-
 		font-size: 3rem;
 	}
 
-	.hamburger-menu {
-		display: flex;
-	}
 
 	body {
 
@@ -428,29 +432,38 @@ footer > div > a:hover { color: black; cursor: pointer; }
 
 		.sidebar {
 			position: absolute;
-			width: 50%;
+			width: 40%;
 			min-height: 100%;
-			background-color: rgba(0, 0, 255, 1);
+			/*background-color: rgba(0, 0, 255, 1);*/
+			background-color: white;
 			top: 0;
 			left: 0;
 			z-index: 1;
 			grid-column: 1 / 7;
 			grid-row: 1 / 4;
-
+			/*display: flex;*/
 		}
+
+			.test {
+				background-color: blue;
+				height: 30px;
+				width: 30px;
+			}
 		header {
 			/*position: absolute;*/
 			/*background-color: yellow;*/
 			height: unset;
 			width: unset;
 
-			height: 20vh;
+			height: 15vh;
 
 			grid-column: 1 / 13;
 			z-index: 0;
-
-
 		}
+
+			.header-title {
+				font-size: 3rem;
+			}
 
 		main {
 			/*position: absolute;*/
