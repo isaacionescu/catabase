@@ -295,7 +295,7 @@ label {
 
 .cat-card {
 	background-color: white;
-	border: 1px solid black;
+	/*border: 1px solid black;*/
 	border-radius: 15px;
 	overflow: hidden;
 	display: flex;
@@ -327,7 +327,6 @@ label {
 	font-size: 1rem;
 	
 }
-
 
 
 
@@ -393,7 +392,7 @@ footer > div > a:hover { color: black; cursor: pointer; }
 
 
 /*MOBILE DEVICES*/
-@media (max-width: 1200px) {
+@media (max-width: 999px) {
 	.desktop-view {
 		display: none;
 	}
