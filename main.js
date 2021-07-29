@@ -4,7 +4,7 @@
 // JSON collection of all cats:    https://cataas.com/api/cats
 // JSON collection w/ filtering:   https://cataas.com/api/cats?tags=cute
 // JSON w/ advanced filtering:     https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
- 
+
 const allCatsURL = "https://cataas.com/api/cats";
 const catsSection = document.querySelector(".cats-section");
 const fixedFrame = document.querySelector(".fixed-frame");
@@ -35,6 +35,28 @@ let counter = 0;
 let screenSizeIsMobile = false;
 let sidebarIsOpen = false;
 const colors = ['red', 'orange', 'green', 'blue'];
+let sidebarHTML = `
+		<div class="range-section">
+			<form class="range-form">
+				<label for="range-label">Limit cats: </label>
+				<select name="number" id="range-label">
+				</select>
+			</form>
+		</div>
+
+		<div class="tags-section">
+			<div class="tags-title">Filter by tags!</div>
+			<div class="tags-clear-and-all">
+			<p><a class="tags-clear">❌ Clear all</a></p>
+			<p><a class="tags-all">✅ Select all</a></p>
+				
+			</div>
+			<form class="tags-form">
+				<ul>
+				</ul>
+			</form>
+		</div>
+`
 
 
 async function fetchCats() {
@@ -62,7 +84,6 @@ async function doWork() {
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
 		allCheckboxes = document.getElementsByClassName("checkbox-item");
-
 		renderCats();
 
 		document.body.addEventListener("click", onDocumentClick);
@@ -73,21 +94,26 @@ async function doWork() {
 doWork();
 
 function checkScreenSize() {
-		let mediaQuery = window.matchMedia('(max-width:999px)')
-		function onScreenSizeChange(event) {
-			if(event.matches) {
-				console.log(`It's mobile`)
-				screenSizeIsMobile = true;
-
-			}
-			else if (!event.matches) {
-				console.log(`It's desktop`)
-				screenSizeIsMobile = false;
-			}
-			renderCats()
+	//check if we're on mobile view
+	let mediaQuery = window.matchMedia('(max-width:999px)')
+	function onScreenSizeChange(event) {
+		if(event.matches) {
+			console.log(`It's mobile`)
+			screenSizeIsMobile = true;
 		}
-		mediaQuery.addListener(onScreenSizeChange)
-		onScreenSizeChange(mediaQuery)
+		else if (!event.matches) {
+			console.log(`It's desktop`);
+			let sidebar = document.querySelector(".sidebar")
+			sidebar.parentNode.removeChild(sidebar)
+			// let bigContainer = document.querySelector(".big-container");	
+			// bigContainer.removeChild(bigContainer.firstChild);
+			// sidebar.style.display = "none";
+			screenSizeIsMobile = false;
+		}
+		renderCats()
+	}
+	mediaQuery.addListener(onScreenSizeChange)
+	onScreenSizeChange(mediaQuery)
 }
 
 function showSidebar() {
@@ -102,19 +128,7 @@ function onDocumentClick(event) {
 	if(event.target.matches(".hamburger-icon")) {
 		console.log(`Hamburger was clicked`);
 		showSidebar()
-		sidebarIsOpen = !sidebarIsOpen
-	}
-
-	if(event.target.matches('header')) {
-		console.log(`Header was clicked`);
-	}
-
-	if(event.target.matches('main')) {
-		console.log(`Main was clicked`);
-	}
-
-	if(event.target.matches('footer')) {
-		console.log(`footer was clicked`);
+		sidebarIsOpen = !sidebarIsOpen;
 	}
 
 	if (event.target.closest(".checkbox-item")) {
@@ -201,12 +215,12 @@ function createCheckboxes(tag) {
 		newCheckBox.type = "checkbox";
 		newCheckBox.name = tag;
 		newCheckBox.id = tag;
-	 
+
 		const newLabel = document.createElement("label");
 		newLabel.setAttribute('for', tag)
 		newLabel.id = tag;
 		newLabel.innerText = ` ${tag}`;
-	 
+
 		const newLi = document.createElement("li");
 		newLi.classList.add("list-item")
 		newLi.appendChild(newCheckBox);
@@ -237,11 +251,11 @@ function configureNavigationActions(event) {
 	curPage.innerHTML = `  ${currentIndex + 1} `		
 }
 
- 
+
 function renderCats() {
 	deleteAllVisibleCats();
- 	
- 	// determine which of the cards to display on the DOM? See if each card contains any of the currently selected tags, and then decide.
+	
+	// determine which of the cards to display on the DOM? See if each card contains any of the currently selected tags, and then decide.
 	let selectedCards = selectedTags.length 
 		? allCards.filter((cat) => 
 				cat.tags.some((tag) =>
@@ -353,7 +367,7 @@ function createCards(data, i) {
 	// catImage.style.background = "blue";
 
 	catText.innerHTML = `Tags: <br>${data.tags.join(", ")}`;
- 
+
 	return {
 	"id": i + 1,
 	"uniqueId": catImage.id,

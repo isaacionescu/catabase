@@ -52,7 +52,7 @@ body {
 }*/
 
 .big-container {
-	/*background-color: maroon;*/
+	background-color: var(--golden);
 	/*width: 50vw;*/
 	/*height: 50vh;*/
 	/*overflow: hidden;*/
@@ -268,19 +268,8 @@ label {
 	grid-row-gap: 1.5vw;
 	/*grid-template-columns: repeat(1, 17vw);*/
 	/*grid-template-rows: repeat(4, 17vw);*/
-
 }
 
-
-/*.cats-grid {
-	background-color: blue;
-	display: grid;
-	padding-left: 3%;
-	grid-template-columns: repeat(5 , 14vw);
-	grid-template-rows: repeat(2, 14vw);
-	grid-column-gap: 1vw;
-	grid-row-gap: 1.5vw;
-}*/
 
 
 .navigation {
@@ -352,7 +341,9 @@ footer > div {
 }
 
 footer > div > a:focus,
-footer > div > a:hover { color: black; cursor: pointer; }
+footer > div > a:hover { 
+	color: black; cursor: pointer; 
+}
 
 .desktop-view {
 
@@ -391,7 +382,10 @@ footer > div > a:hover { color: black; cursor: pointer; }
 }
 
 .make-dark {
-	filter: brightness(0.5);
+	/*filter: brightness(0.5);*/
+	background-color: black;
+	opacity: 0.8;
+	/*background-color: rgba(1, 1, 1, 0.5);*/
 }
 
 
@@ -449,20 +443,20 @@ footer > div > a:hover { color: black; cursor: pointer; }
 				height: 30px;
 				width: 30px;
 			}
+
 		header {
 			/*position: absolute;*/
 			/*background-color: yellow;*/
 			height: unset;
 			width: unset;
-
-			height: 15vh;
+			height: 10vh;
 
 			grid-column: 1 / 13;
 			z-index: 0;
 		}
 
 			.header-title {
-				font-size: 3rem;
+				font-size: 5rem;
 			}
 
 		main {
@@ -481,9 +475,9 @@ footer > div > a:hover { color: black; cursor: pointer; }
 			/*position: absolute;*/
 			height: unset;
 			width: unset;
+			width: 100%;
 			grid-column: 1 / 13;
 			z-index: 0;
-
 		}
 
 			.main-container{
