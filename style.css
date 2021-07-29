@@ -393,7 +393,7 @@ footer > div > a:hover { color: black; cursor: pointer; }
 
 
 /*MOBILE DEVICES*/
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
 	.desktop-view {
 		display: none;
 	}
