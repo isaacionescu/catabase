@@ -152,7 +152,7 @@ function onDocumentClick(event) {
 	}
 
 	// If you click on the dropdown menu, use the inputted value to alter the maxCats state variable, then reinitialize the whole cat grid content
-	// I didn't manage to make a distinction between simply opening the dropdown #range-label element, and selecting a specific <option> value. So I used this workaround as a patch. First time you click (to open range) it does nothing, and every other time it does.
+	// I didn't manage to make a distinction between the action of opening the dropdown #range-label element, and the action of selecting a specific <option> value. So I used this workaround as a patch. The first first time you click (to open range) it does nothing, and every other time, it takes the clicked value as input.
 	if (event.target.matches("#range-label")) {
 		if(counter % 2) {
 			maxCats = parseInt(event.target.value)
@@ -169,9 +169,11 @@ function onDocumentClick(event) {
 
 
 function createDropdownMenu(totalCats) {
+let explanationComment2 = {
 	// 1. this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
 	// 2. then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
 	// 3. then we force the program to remember and stick to the last selected value from the dropdown menu
+}
 	let	rangeLabel = document.querySelector("#range-label");
 	rangeLabel.innerHTML = "";
 	generateValuesForDropdownMenu(totalCats, rangeLabel)
@@ -190,7 +192,6 @@ function generateValuesForDropdownMenu(totalCats, rangeLabel) {
 	}
 
 function configureMyTagsArray(cats) {
-	// to-do: add a RegEx to compensate for the spacing tag issue starting from cat #14
 	const allTagsFromCats = cats.map((cat) => cat.tags).flat();
 	const sortedTags = [...new Set(allTagsFromCats)].sort(); // removed duplicates + sorted alphabetically
 	deleteAllVisibleCheckboxes()
@@ -266,7 +267,7 @@ function renderCats() {
 	console.log(`And now is it mobile? ${screenSizeIsMobile}`)
 
 	// x = columns; y = rows;
-	let x = 4; let y = 1; let maxFit = x * y;
+	let x = 4; let y = 2; let maxFit = x * y;
 	let totalScenes = (curCats > maxFit) ? parseInt(curCats / maxFit) : 1;
 	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
 
@@ -290,8 +291,8 @@ function renderCats() {
 						newScene.style.gridTemplateRows = `repeat(4, 40vw)`;
 						break;
 					case false:
-						newScene.style.gridTemplateColumns = `repeat(${x}, 17vw)`;
-						newScene.style.gridTemplateRows = `repeat(${y}, 17vw)`;	
+						newScene.style.gridTemplateColumns = `repeat(${x}, 14vw)`;
+						newScene.style.gridTemplateRows = `repeat(${y}, 14vw)`;	
 						break
 				}
 
@@ -350,23 +351,13 @@ function createCards(data, i) {
 	const catImage = document.createElement("div");
 	catImage.classList.add("cat-image");
 
+	data.tags.forEach((tag) => {
+	// Some cats' tags starting with cat #14 have whitespace. In order to make them into HTML classes and add them to each cat card, I gotta replace the whitespace:
+		let regex = /\s/g;
+		tag = tag.replace(regex, '-')
+		catImage.classList.add(tag);
+	})
 
-/////////////// WORK IN PROGRESS
-	let hasWhitespace = (tag) => {
-		// tag == "gif"
-		// tag.length = 4;
-		console.log(tag.length)
-		tag.length == 20;
-		console.log(tag.length == 20)
-	}
-	// console.log(data.tags)
-	// console.log(data.tags.some(hasWhitespace))
-	data.tags.forEach(tag => {hasWhitespace(tag)})
-/////////////// WORK IN PROGRESS
-
-
-
-	data.tags.forEach((tag) => catImage.classList.add(tag));
 	catImage.id = data.id;
 	const catTitle = document.createElement("div");
 	catTitle.classList.add("cat-title");
