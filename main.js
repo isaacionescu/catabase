@@ -1,10 +1,3 @@
-// main site:                      https://cataas.com
-// random cat:                     https://cataas.com/cat
-// example of an individual cat:   https://cataas.com/cat/595f280e557291a9750ebf9f
-// JSON collection of all cats:    https://cataas.com/api/cats
-// JSON collection w/ filtering:   https://cataas.com/api/cats?tags=cute
-// JSON w/ advanced filtering:     https://cataas.com/api/cats?tags=tag1,tag2&skip=0&limit=10
-
 const allCatsURL = "https://cataas.com/api/cats";
 const catsSection = document.querySelector(".cats-section");
 const fixedFrame = document.querySelector(".fixed-frame");
@@ -15,7 +8,7 @@ let main = document.querySelector('main');
 let footer = document.querySelector('footer');
 let sidebar = document.querySelector(".sidebar");
 
-let hamburgerIcon;
+let hamburgerIcon = document.querySelector(".hamburger-icon");
 let	unorderedList;
 let	allCheckboxes;
 let allScenes;
@@ -76,13 +69,13 @@ async function doWork() {
 		// 7. finally, we render the cats on the DOM, with default settings (they need to be displayed anyway, prior to any subsequent filtering)
 	}
 		checkScreenSize()
-		hamburgerIcon = document.querySelector(".hamburger-icon");
+		// hamburgerIcon = document.querySelector(".hamburger-icon");
 		const rawCats = await fetchCats(); 
-
-		createDropdownLimiterMenu(rawCats.length);
+		createDropdownMenu(rawCats.length);
 		const myCats = rawCats.slice(0, maxCats);
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
+		console.log(allCards)
 		allCheckboxes = document.getElementsByClassName("checkbox-item");
 		renderCats();
 
@@ -103,14 +96,16 @@ function checkScreenSize() {
 		}
 		else if (!event.matches) {
 			console.log(`It's desktop`);
-			let sidebar = document.querySelector(".sidebar")
-			sidebar.parentNode.removeChild(sidebar)
+			sidebar = document.querySelector(".sidebar")
+			if(sidebar) {
+				sidebar.parentNode.removeChild(sidebar)
+			}
 			// let bigContainer = document.querySelector(".big-container");	
 			// bigContainer.removeChild(bigContainer.firstChild);
 			// sidebar.style.display = "none";
 			screenSizeIsMobile = false;
 		}
-		renderCats()
+		// renderCats()
 	}
 	mediaQuery.addListener(onScreenSizeChange)
 	onScreenSizeChange(mediaQuery)
@@ -173,7 +168,7 @@ function onDocumentClick(event) {
 
 
 
-function createDropdownLimiterMenu(totalCats) {
+function createDropdownMenu(totalCats) {
 	// 1. this deletes all previously generated <option> values from the dropdown "Limit cats" - otherwise they keep accumulating on each calling of doWork()
 	// 2. then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
 	// 3. then we force the program to remember and stick to the last selected value from the dropdown menu
@@ -354,6 +349,23 @@ function deleteAllVisibleCats() {
 function createCards(data, i) {
 	const catImage = document.createElement("div");
 	catImage.classList.add("cat-image");
+
+
+/////////////// WORK IN PROGRESS
+	let hasWhitespace = (tag) => {
+		// tag == "gif"
+		// tag.length = 4;
+		console.log(tag.length)
+		tag.length == 20;
+		console.log(tag.length == 20)
+	}
+	// console.log(data.tags)
+	// console.log(data.tags.some(hasWhitespace))
+	data.tags.forEach(tag => {hasWhitespace(tag)})
+/////////////// WORK IN PROGRESS
+
+
+
 	data.tags.forEach((tag) => catImage.classList.add(tag));
 	catImage.id = data.id;
 	const catTitle = document.createElement("div");
@@ -363,7 +375,7 @@ function createCards(data, i) {
 	catText.classList.add("cat-text");
 	catText.id = catImage.id;
  
-	catImage.style.background = `url(https://cataas.com/cat/${data.id}) 30% 40%`;
+	catImage.style.background = `url(https://cataas.com/cat/${data.id}) 30% 40% no-repeat`;
 	// catImage.style.background = "blue";
 
 	catText.innerHTML = `Tags: <br>${data.tags.join(", ")}`;

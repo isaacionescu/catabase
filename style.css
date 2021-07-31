@@ -382,9 +382,9 @@ footer > div > a:hover {
 }
 
 .make-dark {
-	/*filter: brightness(0.5);*/
-	background-color: black;
-	opacity: 0.8;
+	filter: brightness(0.5);
+/*	background-color: black;
+	opacity: 0.8;*/
 	/*background-color: rgba(1, 1, 1, 0.5);*/
 }
 
