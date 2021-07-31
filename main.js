@@ -153,14 +153,12 @@ function onDocumentClick(event) {
 
 	// If you click on the dropdown menu, use the inputted value to alter the maxCats state variable, then reinitialize the whole cat grid content
 	// I didn't manage to make a distinction between the action of opening the dropdown #range-label element, and the action of selecting a specific <option> value. So I used this workaround as a patch. The first first time you click (to open range) it does nothing, and every other time, it takes the clicked value as input.
-	// LATER EDIT: DISABLED FOR NOW
 	if (event.target.matches("#range-label")) {
-		// if(counter % 2) {
+		if(counter % 2) {
 			maxCats = parseInt(event.target.value)
-			console.log(`range label was clicked fam`)
 			doWork()
-		// };
-		// counter++;
+		};
+		counter++;
 	}
 
 	if(event.target.matches(".nav")) {
