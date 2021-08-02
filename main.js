@@ -269,8 +269,8 @@ function renderCats() {
 
 		switch(screenSizeIsMobile) {
 			case true:
-				newScene.style.gridTemplateColumns = `repeat(1, 50vw)`;
-				newScene.style.gridTemplateRows = `repeat(${maxFit}, 50vw)`;
+				newScene.style.gridTemplateColumns = `repeat(1, 40vw)`;
+				newScene.style.gridTemplateRows = `repeat(${maxFit},40vw)`;
 				break;
 			case false:
 
