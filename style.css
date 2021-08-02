@@ -430,7 +430,8 @@ footer > div > a:hover {
 			/*position: absolute;*/
 			width: unset;
 			height: unset;
-			min-height: 80vh;
+			min-height: 83vh;
+			padding-bottom: 5vh;
 			grid-column: 1 / 13;
 			z-index: 0;
 			/*overflow-y: hidden;*/
@@ -446,7 +447,7 @@ footer > div > a:hover {
 
 				.cats-section {
 					/*background-color: pink;*/
-					border: 2px solid black;
+					/*border: 2px solid black;*/
 					border-radius: 10px;
 					grid-column: 3 / -1 ;
 					height: unset;
@@ -468,7 +469,7 @@ footer > div > a:hover {
 						display: flex;
 						flex-direction: row-reverse;
 						align-items: right;
-						margin-bottom: 4vh;
+						margin-bottom: 2.5vh;
 					}
 
 						.scene {
@@ -491,11 +492,11 @@ footer > div > a:hover {
 								}
 
 								.cat-title {
-									font-size: 1.5rem;
+									font-size: 3rem;
 								}
 
 								.cat-text {
-									font-size: 1rem;
+									font-size: 2.5rem;
 								}
 
 					.navigation {
@@ -512,8 +513,8 @@ footer > div > a:hover {
 		footer {
 			/*position: absolute;*/
 			height: unset;
-			height: 10vh;
 			width: unset;
+			height: 7vh;
 			width: 100%;
 			grid-column: 1 / 13;
 			z-index: 0;
