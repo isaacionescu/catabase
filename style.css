@@ -126,12 +126,10 @@ main {
 	/*margin: auto auto;*/
 }
 
-.range-form > label {
-
+.range-label {
 }
 
-.range-form > select {
-	
+.range-select {
 }
 
 .range-option {
@@ -193,18 +191,17 @@ input {
 	overflow-x: hidden;
 }
 
-.checkbox-item {
-	height: 20px;
+.checkbox-input {
+	/*background-color: blue;*/
 	/*display: block;*/
-}
-
-
-input[type="checkbox"] {
+	font-size: 0.95rem;
 	vertical-align: middle;
 }
 
-label {
-	font-size: 0.95rem;
+
+.checkbox-label {
+	/*background-color: orange;*/
+	font-size: 1rem;
 }
 
 
@@ -395,31 +392,57 @@ footer > div > a:hover {
 			grid-row: 1 / 4;
 			flex-direction: column;
 			align-items: center;
-			justify-content: space-evenly;
+			justify-content: top;
 		}
 
 			.range-section {
 				padding: 1rem;
-				background-color: red;
-
-
+				/*background-color: red;*/
+				color: white;
 			}
 				.range-form {		
 				}
 
 					.range-form > label {
-						font-size: 2rem;
+						font-size: 4rem;
 					}
 
 					.range-form > select {
-						font-size: 1.5rem;
+						font-size: 4rem;
 					}
 			.tags-section {
-				/*background-color: green;*/
+				background-color: green;
 				width: 90%;
-
-				/*font-size: 30px;*/
 			}
+
+				.tags-title {
+					font-size: 4rem;
+				}
+
+				.tags-clear-and-all {
+					font-size: 3rem;
+				}
+
+				.tags-form {
+					margin-top: unset;
+					height: unset;
+					margin: 0 auto;
+					display: block;
+					overflow-y: auto;
+					overflow-x: hidden;
+					font-size: 3rem;
+				}
+
+					.checkbox-input {
+/*						height: 300px;
+						display: block;
+						background-color: blue;*/
+					}
+
+					.checkbox-label {
+						font-size: 3rem;
+
+					}
 
 		header {
 			/*position: absolute;*/

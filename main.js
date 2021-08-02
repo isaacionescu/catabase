@@ -53,7 +53,7 @@ async function doWork() {
 		const myCats = rawCats.slice(0, maxCats);
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
-		allCheckboxes = document.getElementsByClassName("checkbox-item");
+		allCheckboxes = document.getElementsByClassName("checkbox-input");
 		renderCats();
 
 		document.body.addEventListener("click", onDocumentClick);
@@ -105,7 +105,7 @@ function onDocumentClick(event) {
 	}
 
 
-	if (event.target.closest(".checkbox-item")) {
+	if (event.target.closest(".checkbox-input")) {
 		const tag = event.target.id;
 		switch (event.target.checked) {
 			case true:
@@ -192,13 +192,14 @@ function deleteAllVisibleCheckboxes()  {
 
 function createCheckboxes(tag) {
 		const newCheckBox = document.createElement("input");
-		newCheckBox.classList.add("checkbox-item");
+		newCheckBox.classList.add("checkbox-input");
 		newCheckBox.type = "checkbox";
 		newCheckBox.name = tag;
 		newCheckBox.id = tag;
 
 		const newLabel = document.createElement("label");
 		newLabel.setAttribute('for', tag)
+		newLabel.className = "checkbox-label"
 		newLabel.id = tag;
 		newLabel.innerText = ` ${tag}`;
 
