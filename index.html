@@ -4,18 +4,18 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
 
-	<title>Catabase v. 1.29.74</title>
+	<title>Catabase v. 1.29.75</title>
 </head>
 
 <body>
 
 <div class="big-container">
-	<div class="sidebar">
+	<div class="sidebar make-invisible">
 
 		<div class="range-section">
 			<form class="range-form">
-				<label for="range-label">Limit cats: </label>
-				<select name="number" id="range-label">
+				<label class ="range-label" >Limit cats: </label>
+				<select class="range-select" name="number">
 				</select>
 			</form>
 		</div>
@@ -23,9 +23,8 @@
 		<div class="tags-section">
 			<div class="tags-title">Filter by tags!</div>
 			<div class="tags-clear-and-all">
-			<p><a class="tags-clear">❌ Clear all</a></p>
-			<p><a class="tags-all">✅ Select all</a></p>
-				
+				<p><a class="tags-clear">❌ Clear all</a></p>
+				<p><a class="tags-all">✅ Select all</a></p>	
 			</div>
 			<form class="tags-form">
 				<ul>
@@ -37,7 +36,7 @@
 	<header>
 		<div class="header-title"><a href="index.html">😺 Catabase</a></div>
  
-		<div class="hamburger-icon-div"><a class="hamburger-icon no-highlight">≡</a></div>
+		<div class="hamburger-icon-div no-highlight"><a class="hamburger-icon no-highlight">≡</a></div>
 	</header>
 
 	<main>
@@ -45,9 +44,9 @@
 
 			<div class="range-section desktop-view">
 				<form class="range-form">
-					<label for="range-label">Limit cats: </label>
-					<select name="number" id="range-label">
-						<!-- <option value="a" class="range-value" selected>test  -->
+					<label class ="range-label" for="range-select">Limit cats: </label>
+					<select class="range-select" name="number">
+						<!-- <option value="a" class="option" selected>test  -->
 					</select>
 				</form>
 			</div>

@@ -28,28 +28,7 @@ let counter = 0;
 let screenSizeIsMobile = false;
 let sidebarIsOpen = false;
 const colors = ['red', 'orange', 'green', 'blue'];
-let sidebarHTML = `
-		<div class="range-section">
-			<form class="range-form">
-				<label for="range-label">Limit cats: </label>
-				<select name="number" id="range-label">
-				</select>
-			</form>
-		</div>
-
-		<div class="tags-section">
-			<div class="tags-title">Filter by tags!</div>
-			<div class="tags-clear-and-all">
-			<p><a class="tags-clear">❌ Clear all</a></p>
-			<p><a class="tags-all">✅ Select all</a></p>
-				
-			</div>
-			<form class="tags-form">
-				<ul>
-				</ul>
-			</form>
-		</div>
-`
+let sidebarHTML
 
 
 async function fetchCats() {
@@ -107,15 +86,21 @@ function checkScreenSize() {
 }
 
 function toggleSidebar() {
-	sidebar.classList.toggle("make-visible");
+	sidebar.classList.toggle("make-invisible");
 	header.classList.toggle("make-dark");
 	main.classList.toggle("make-dark");
 	footer.classList.toggle("make-dark");
 	sidebarIsOpen = !sidebarIsOpen;
+	// console.log(`Something was clicked`)
+	// console.log(`Sidebar? ${sidebarIsOpen}`)
 }
 
 function onDocumentClick(event) {
-	if(event.target.matches(".hamburger-icon") || sidebarIsOpen && !event.target.matches(".sidebar") ) {
+	// if(!event.target.closest(".sidebar")) {
+	// 	console.log(`Outside of sidebar was clicked`)
+	// }
+
+	if(event.target.matches(".hamburger-icon") || sidebarIsOpen && !event.target.closest(".sidebar") ) {
 		toggleSidebar()
 	}
 
@@ -147,12 +132,18 @@ function onDocumentClick(event) {
 
 	// If you click on the dropdown menu, use the inputted value to alter the maxCats state variable, then reinitialize the whole cat grid content
 	// I didn't manage to make a distinction between the action of opening the dropdown #range-label element, and the action of selecting a specific <option> value. So I used this workaround as a patch. The first first time you click (to open range) it does nothing, and every other time, it takes the clicked value as input.
-	if (event.target.matches("#range-label")) {
+
+	if (event.target.closest(".range-select")) {
+		// console.log(`.range-select was clicked`)
 		if(counter % 2) {
 			maxCats = parseInt(event.target.value)
 			doWork()
 		};
 		counter++;
+	}
+
+	else if (event.target.matches(".range-option")) {
+		console.log(`.range-option was clicked`)
 	}
 
 	if(event.target.matches(".nav")) {
@@ -168,19 +159,20 @@ let explanationComment2 = {
 	// 2. then we create all 500 values for our dropdown menu (so the user has the power to select as many cats as the external API provides)
 	// 3. then we force the program to remember and stick to the last selected value from the dropdown menu
 }
-	let	rangeLabel = document.querySelector("#range-label");
-	rangeLabel.innerHTML = "";
-	generateValuesForDropdownMenu(totalCats, rangeLabel)
+	let	rangeSelect = document.querySelector(".range-select");
+	rangeSelect.innerHTML = "";
+	generateValuesForDropdownMenu(totalCats, rangeSelect)
 	let	allRangeInputValues = document.querySelectorAll("option");
 	allRangeInputValues[maxCats].setAttribute('selected', true)
 }
 
-function generateValuesForDropdownMenu(totalCats, rangeLabel) {
+function generateValuesForDropdownMenu(totalCats, rangeSelect) {
 		for (let i = 0; i < totalCats; i++) {
-			const newValueInput = document.createElement("option");
-			newValueInput.setAttribute('value', i);
-			newValueInput.innerHTML = i;
-			rangeLabel.appendChild(newValueInput)
+			const newOptionInput = document.createElement("option");
+			newOptionInput.setAttribute('value', i);
+			newOptionInput.className = "range-option";
+			newOptionInput.innerHTML = i;
+			rangeSelect.appendChild(newOptionInput)
 		}
 	}
 
@@ -259,7 +251,7 @@ function renderCats() {
 	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
 
 	deleteAllVisibleScenes()
-	console.log(screenSizeIsMobile)
+	// console.log(screenSizeIsMobile)
 	for (let i = 0; i <= totalScenes; i++) {
 		const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
 		selectedCards = [...selectedCards.slice(maxFit)]
