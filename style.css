@@ -489,8 +489,7 @@ footer > div > a:hover {
 						display: flex;
 						flex-direction: row-reverse;
 						align-items: right;
-					margin-bottom: 4vh;
-
+						margin-bottom: 4vh;
 					}
 
 						.scene {
