@@ -157,6 +157,8 @@ input {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	overflow: hidden;
+
 	/*align-items: center;*/
 	/*height: 50px;*/
 }
@@ -393,6 +395,7 @@ footer > div > a:hover {
 			flex-direction: column;
 			align-items: center;
 			justify-content: top;
+			padding-top: 5vh;
 		}
 
 			.range-section {
@@ -411,16 +414,16 @@ footer > div > a:hover {
 						font-size: 4rem;
 					}
 			.tags-section {
-				background-color: green;
+				/*background-color: green;*/
 				width: 90%;
 			}
 
 				.tags-title {
-					font-size: 4rem;
+					font-size: 3.5rem;
 				}
 
 				.tags-clear-and-all {
-					font-size: 3rem;
+					font-size: 2.5rem;
 				}
 
 				.tags-form {
@@ -428,8 +431,7 @@ footer > div > a:hover {
 					height: unset;
 					margin: 0 auto;
 					display: block;
-					overflow-y: auto;
-					overflow-x: hidden;
+					/*overflow-x: scroll;*/
 					font-size: 3rem;
 				}
 
@@ -440,7 +442,7 @@ footer > div > a:hover {
 					}
 
 					.checkbox-label {
-						font-size: 3rem;
+						font-size: 2.5rem;
 
 					}
 
