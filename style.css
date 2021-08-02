@@ -219,7 +219,6 @@ label {
 	width: 100%;
 	height: 100%;
 	display: flex;
-
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
@@ -245,7 +244,7 @@ label {
 	width: 100px;*/
 
 	width: 95%;
-	/*height: 100%;*/
+	height: 100%;
 	display: grid;
 	/*padding-left: 3%;*/
 	justify-content: center;
@@ -261,6 +260,7 @@ label {
 	background-color: white;
 	display: flex;
 	align-items: center;
+	/*text-align: center;*/
 	height: 5%;
 	color: black;
 	font-size: 1.2rem;
@@ -423,10 +423,11 @@ footer > div > a:hover {
 			/*display: flex;*/
 		}
 
-			.test {
-				background-color: blue;
-				height: 30px;
-				width: 30px;
+			.range-section {
+				background-color: red;
+			}
+
+			.tags-section {
 			}
 
 		header {
@@ -450,11 +451,85 @@ footer > div > a:hover {
 			height: unset;
 			min-height: 80vh;
 			/*overflow: hidden;*/
-
 			grid-column: 1 / 13;
 			z-index: 0;
+			/*overflow-y: hidden;*/
 
 		}
+
+			.main-container{
+				height: unset;
+				width: unset;
+				display: flex;
+				justify-content: center;
+				/*align-items: center;*/
+			}
+
+				.cats-section {
+					background-color: pink;
+					border: 2px solid black;
+					border-radius: 10px;
+					grid-column: 3 / -1 ;
+					height: unset;
+					width: unset;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					align-items: center;
+				}
+
+					.fixed-frame {
+						/*border: 2px solid black;*/
+						background-color: aquamarine;
+						/*padding-top: 5%;*/
+						/*padding-bottom: 5%;*/
+						height: unset;
+						width: unset;
+						/*width: 100%;*/
+						display: flex;
+						flex-direction: row-reverse;
+						align-items: right;
+					margin-bottom: 4vh;
+
+					}
+
+						.scene {
+							/*background-color: green;*/
+							width: unset;
+							/*width: 95%;*/
+							height: unset;
+							display: grid;
+							/*padding-left: 3%;*/
+							justify-content: center;
+							grid-column-gap: 1.5vw;
+							grid-row-gap: 1.5vw;
+							overflow-y: auto;
+						}
+
+							.cat-card {
+							}
+
+								.cat-image {
+								}
+
+								.cat-title {
+									font-size: 1.2rem;
+								}
+
+								.cat-text {
+									font-size: 0.7rem;
+								}
+
+					.navigation {
+						padding: 1rem;
+						display: flex;
+						align-items: center;
+						/*text-align: center;*/
+						height: 5%;
+						font-size: 2rem;
+						font-weight: 800;
+					}
+
 
 		footer {
 			/*position: absolute;*/
@@ -465,51 +540,6 @@ footer > div > a:hover {
 			z-index: 0;
 		}
 
-			.main-container{
-				height: unset;
-				width: unset;
-			}
 
-			.range-section {
-				background-color: red;
 
-				/*grid-column: 1 / 1;*/
-				/*display: none;*/
-			}
-
-			.tags-section {
-				/*grid-column: 1 / 2;*/
-				/*display: none;*/
-			}
-
-			.cats-section {
-				/*grid-column: 4 / -1;*/
-			}
-
-				.fixed-frame {
-					/*flex-direction: row;*/
-				}
-
-					.scene {
-						flex-direction: row;
-						/*height: 10%;*/
-						/*overflow: auto;*/
-					}
-
-						.cat-card {
-
-						}
-
-							.cat-image {
-
-							}
-
-							.cat-title {
-								font-size: 1.2rem;
-							}
-
-							.cat-text {
-								font-size: 0.7rem;
-
-							}
 }

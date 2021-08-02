@@ -69,13 +69,11 @@ async function doWork() {
 		// 7. finally, we render the cats on the DOM, with default settings (they need to be displayed anyway, prior to any subsequent filtering)
 	}
 		checkScreenSize()
-		// hamburgerIcon = document.querySelector(".hamburger-icon");
 		const rawCats = await fetchCats(); 
 		createDropdownMenu(rawCats.length);
 		const myCats = rawCats.slice(0, maxCats);
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
 		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
-		console.log(allCards)
 		allCheckboxes = document.getElementsByClassName("checkbox-item");
 		renderCats();
 
@@ -100,12 +98,9 @@ function checkScreenSize() {
 			if(sidebar) {
 				sidebar.parentNode.removeChild(sidebar)
 			}
-			// let bigContainer = document.querySelector(".big-container");	
-			// bigContainer.removeChild(bigContainer.firstChild);
-			// sidebar.style.display = "none";
 			screenSizeIsMobile = false;
 		}
-		// renderCats()
+		renderCats()
 	}
 	mediaQuery.addListener(onScreenSizeChange)
 	onScreenSizeChange(mediaQuery)
@@ -188,12 +183,11 @@ function generateValuesForDropdownMenu(totalCats, rangeLabel) {
 			newValueInput.innerHTML = i;
 			rangeLabel.appendChild(newValueInput)
 		}
-
 	}
 
 function configureMyTagsArray(cats) {
 	const allTagsFromCats = cats.map((cat) => cat.tags).flat();
-	const sortedTags = [...new Set(allTagsFromCats)].sort(); // removed duplicates + sorted alphabetically
+	const sortedTags = [...new Set(allTagsFromCats)].sort();
 	deleteAllVisibleCheckboxes()
 	sortedTags.forEach(createCheckboxes);
 	return sortedTags
@@ -223,7 +217,6 @@ function createCheckboxes(tag) {
 		newLi.appendChild(newLabel);
 		unorderedList.appendChild(newLi);
 	};
- 
 
 
 function configureNavigationActions(event) {
@@ -250,8 +243,6 @@ function configureNavigationActions(event) {
 
 function renderCats() {
 	deleteAllVisibleCats();
-	
-	// determine which of the cards to display on the DOM? See if each card contains any of the currently selected tags, and then decide.
 	let selectedCards = selectedTags.length 
 		? allCards.filter((cat) => 
 				cat.tags.some((tag) =>
@@ -259,10 +250,7 @@ function renderCats() {
 			)
 		)
 		: allCards;
-	// console.log(`selectedTags:`)
-	// console.log(selectedTags)
-	// console.log(`selectedCards:`)
-	// console.log(selectedCards)
+	// console.log(`selectedTags:`); console.log(selectedTags); console.log(`selectedCards:`); console.log(selectedCards)
 	let curCats = selectedCards.length
 	console.log(`And now is it mobile? ${screenSizeIsMobile}`)
 
@@ -271,35 +259,32 @@ function renderCats() {
 	let totalScenes = (curCats > maxFit) ? parseInt(curCats / maxFit) : 1;
 	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
 
-
 	deleteAllVisibleScenes()
-	// console.log(selectedCards.length)
-	// if(remainder > 0) {
+	console.log(screenSizeIsMobile)
 	for (let i = 0; i <= totalScenes; i++) {
-			const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
-			selectedCards = [...selectedCards.slice(maxFit)]
-			// console.log(selectedCards)
-			// if(selectedCards.length > 0) {
-				// console.log(`selectedCards wasn't empty this time!`)
+		const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
+		selectedCards = [...selectedCards.slice(maxFit)]
+		const newScene = createNewScene(slicedCardsArray, i, x, y)
+		newScene.style.display = i ? "none" : "grid"
 
-				const newScene = createNewScene(slicedCardsArray, i, x, y)
-				newScene.style.display = i ? "none" : "grid"
+		switch(screenSizeIsMobile) {
+			case true:
+				newScene.style.gridTemplateColumns = `repeat(1, 40vw)`;
+				newScene.style.gridTemplateRows = `repeat(${maxFit}, 40vw)`;
+				break;
+			case false:
 
-				switch(screenSizeIsMobile) {
-					case true:
-						newScene.style.gridTemplateColumns = `repeat(1, 40vw)`;
-						newScene.style.gridTemplateRows = `repeat(4, 40vw)`;
-						break;
-					case false:
-						newScene.style.gridTemplateColumns = `repeat(${x}, 14vw)`;
-						newScene.style.gridTemplateRows = `repeat(${y}, 14vw)`;	
-						break
-				}
-
-				fixedFrame.appendChild(newScene)
-			// }
+				newScene.style.gridTemplateColumns = `repeat(${x}, 14vw)`;
+				newScene.style.gridTemplateRows = `repeat(${y}, 14vw)`;	
+				break
+		}
+		fixedFrame.appendChild(newScene)
 	} 
-	// }
+	const catsSection = document.querySelector('.cats-section');
+	catsSection.style.height = "unset";
+
+
+
 	curPage.innerHTML = `  1`
 	lastPage.innerHTML = `  ${(curCats > maxFit) ? totalScenes + 1 : 1}`
 }
@@ -317,13 +302,16 @@ function createNewScene(cards, i, x, y) {
 	cards.forEach((card) => {
 		const newCard = addCardsToScene(card, newScene)
 		newScene.appendChild(newCard)
-	}
-	);
+	});
+	const catsSection = document.querySelector('.cats-section');
+	const fixedFrame = document.querySelector('.fixed-frame')
+	// catsSection.style.height = "fill";
+	// fixedFrame.style.height = "250px"
+	// newScene.style.height = "0px"
 	return newScene
 }
 	 
 function addCardsToScene(cat, newScene) {
-	// console.log(cat)
 	const newCard = document.createElement("div");
 	newCard.classList.add("cat-card");
  
