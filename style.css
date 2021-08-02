@@ -5,7 +5,6 @@
 	--golden: #EFD79F;
 	--darkgolden: #E7C981;
 	--darkpink: #EFABB7;
-
 	--grey: #F9F9F9;
 	--darkgrey: #484848;
 }
@@ -44,12 +43,6 @@ body {
     /*overflow: hidden;*/
 }
 
-/*.container {
-	background-color: var(--golden);
-	height: 100vh;
-    width: 100vw;
-    display: block;
-}*/
 
 .big-container {
 	background-color: var(--golden);
@@ -331,23 +324,10 @@ footer > div > a:hover {
 }
 
 .desktop-view {
-
 }
 
 .hamburger-icon {
 	display: none;
-}
-
-.hamburger-menu {
-	display: none;
-	background-color: cyan;
-	height: 500px;
-	width: 100px;
-/*	height: 100%;
-	width: 100%;*/
-	/*position: absolute;*/
-	left: 2.5vw;
-	font-size: 3rem;
 }
 
 /*.mobile-view {
@@ -385,7 +365,6 @@ footer > div > a:hover {
 	}
 
 	.hamburger-icon-div {
-		/*background-color: white;*/
 		position: absolute;
 		right: 2.5rem;
 	}
@@ -393,7 +372,7 @@ footer > div > a:hover {
 	.hamburger-icon {
 		/*background-color: cyan;*/
 		display: block;
-		font-size: 3rem;
+		font-size: 6rem;
 	}
 
 
@@ -402,7 +381,7 @@ footer > div > a:hover {
 	}
 
 	.big-container {
-		height: 100%;
+		height: 100vh;
 		width: 100vw;
 		display: grid;
 		grid-template-columns: repeat(12, 1fr);
@@ -414,7 +393,7 @@ footer > div > a:hover {
 		.sidebar {
 			position: absolute;
 			width: 50vw;
-			/*min-height: 100%;*/
+			height: 100%;
 			/*background-color: rgba(0, 0, 255, 1);*/
 			background-color: white;
 			top: 0;
@@ -439,7 +418,6 @@ footer > div > a:hover {
 			width: unset;
 			height: 10vh;
 			/*width: 100vw;*/
-
 			grid-column: 1 / 13;
 			z-index: 0;
 		}
@@ -453,11 +431,9 @@ footer > div > a:hover {
 			width: unset;
 			height: unset;
 			min-height: 80vh;
-			/*overflow: hidden;*/
 			grid-column: 1 / 13;
 			z-index: 0;
 			/*overflow-y: hidden;*/
-
 		}
 
 			.main-container{
@@ -505,7 +481,7 @@ footer > div > a:hover {
 							justify-content: center;
 							grid-column-gap: 1.5vw;
 							grid-row-gap: 1.5vw;
-							overflow-y: auto;
+							/*overflow-y: auto;*/
 						}
 
 							.cat-card {
@@ -536,7 +512,7 @@ footer > div > a:hover {
 		footer {
 			/*position: absolute;*/
 			height: unset;
-			height: 2vh;
+			height: 10vh;
 			width: unset;
 			width: 100%;
 			grid-column: 1 / 13;
@@ -545,7 +521,7 @@ footer > div > a:hover {
 
 			footer > div {
 				/*background-color: red;*/
-				font-size: 1.1rem;
+				font-size: 1.5rem;
 				color: var(--grey);
 			}
 
