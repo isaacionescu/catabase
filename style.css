@@ -533,11 +533,18 @@ footer > div > a:hover {
 		footer {
 			/*position: absolute;*/
 			height: unset;
+			height: 2vh;
 			width: unset;
 			width: 100%;
 			grid-column: 1 / 13;
 			z-index: 0;
 		}
+
+			footer > div {
+				/*background-color: red;*/
+				font-size: 1.1rem;
+				color: var(--grey);
+			}
 
 
 

@@ -269,8 +269,8 @@ function renderCats() {
 
 		switch(screenSizeIsMobile) {
 			case true:
-				newScene.style.gridTemplateColumns = `repeat(1, 40vw)`;
-				newScene.style.gridTemplateRows = `repeat(${maxFit}, 40vw)`;
+				newScene.style.gridTemplateColumns = `repeat(1, 50vw)`;
+				newScene.style.gridTemplateRows = `repeat(${maxFit}, 50vw)`;
 				break;
 			case false:
 
@@ -281,10 +281,8 @@ function renderCats() {
 		fixedFrame.appendChild(newScene)
 	} 
 	const catsSection = document.querySelector('.cats-section');
-	catsSection.style.height = "unset";
-
-
-
+	catsSection.style.height = "fill";
+	// let a = 0;
 	curPage.innerHTML = `  1`
 	lastPage.innerHTML = `  ${(curCats > maxFit) ? totalScenes + 1 : 1}`
 }
@@ -306,8 +304,8 @@ function createNewScene(cards, i, x, y) {
 	const catsSection = document.querySelector('.cats-section');
 	const fixedFrame = document.querySelector('.fixed-frame')
 	// catsSection.style.height = "fill";
-	// fixedFrame.style.height = "250px"
-	// newScene.style.height = "0px"
+	// fixedFrame.style.height = "fill"
+	// newScene.style.height = "fill"
 	return newScene
 }
 	 
@@ -329,10 +327,6 @@ function addCardsToScene(cat, newScene) {
 function deleteAllVisibleCats() {
 	let fixedFrame = document.getElementsByClassName("fixed-frame")
 	fixedFrame.innerHTML = "";
-	// let allCatItems = document.getElementsByClassName("cat-card");
-	// 	for (let cat of allCatItems) {
-	// 		cat.style.display = "none";
-	// 	}
 }
  
 function createCards(data, i) {
@@ -353,9 +347,7 @@ function createCards(data, i) {
  
 	catText.classList.add("cat-text");
 	catText.id = catImage.id;
- 
 	catImage.style.background = `url(https://cataas.com/cat/${data.id}) 30% 40% no-repeat`;
-	// catImage.style.background = "blue";
 
 	catText.innerHTML = `Tags: <br>${data.tags.join(", ")}`;
 
