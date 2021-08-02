@@ -106,20 +106,19 @@ function checkScreenSize() {
 	onScreenSizeChange(mediaQuery)
 }
 
-function showSidebar() {
+function toggleSidebar() {
 	sidebar.classList.toggle("make-visible");
 	header.classList.toggle("make-dark");
 	main.classList.toggle("make-dark");
 	footer.classList.toggle("make-dark");
+	sidebarIsOpen = !sidebarIsOpen;
 }
 
-
 function onDocumentClick(event) {
-	if(event.target.matches(".hamburger-icon")) {
-		console.log(`Hamburger was clicked`);
-		showSidebar()
-		sidebarIsOpen = !sidebarIsOpen;
+	if(event.target.matches(".hamburger-icon") || sidebarIsOpen && !event.target.matches(".sidebar") ) {
+		toggleSidebar()
 	}
+
 
 	if (event.target.closest(".checkbox-item")) {
 		const tag = event.target.id;
