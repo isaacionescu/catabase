@@ -372,7 +372,7 @@ footer > div > a:hover {
 	.hamburger-icon {
 		/*background-color: cyan;*/
 		display: block;
-		font-size: 6rem;
+		font-size: 8rem;
 	}
 
 
@@ -430,6 +430,9 @@ footer > div > a:hover {
 			/*position: absolute;*/
 			width: unset;
 			height: unset;
+			padding-top: 5vh;
+			padding-bottom: 5vh;
+
 			min-height: 83vh;
 			padding-bottom: 5vh;
 			grid-column: 1 / 13;
@@ -440,6 +443,9 @@ footer > div > a:hover {
 			.main-container{
 				height: unset;
 				width: unset;
+				padding-top: unset;
+				padding-bottom: unset;
+				padding-top: ;
 				display: flex;
 				justify-content: center;
 				/*align-items: center;*/
@@ -505,7 +511,7 @@ footer > div > a:hover {
 						align-items: center;
 						/*text-align: center;*/
 						height: 5%;
-						font-size: 2rem;
+						font-size: 3rem;
 						font-weight: 800;
 					}
 
