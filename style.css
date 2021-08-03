@@ -356,7 +356,7 @@ footer > div > a:hover {
 
 
 /*MOBILE DEVICES*/
-@media (max-width: 899px) {
+@media (max-width: 999px) {
 	.desktop-view {
 		display: none;
 	}
