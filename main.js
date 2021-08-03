@@ -20,15 +20,14 @@ let curPage = document.querySelector(".cur-page");
 let lastPage = document.querySelector(".last-page");
  
 let maxCats = 13; // global ceiling of cats to be used for our tags, and to be displayed on our page
+let currentOption = 0;
 let selectedTags = []; // this array will contain all currently selected tags, live
 let allPossibleSelectedTags = []; // auxiliary variable, used to temporarily store the max # of selected tags, for when the user "Selects all"
 let allCards = [];
 let currentIndex = 0;
-let counter = 0;
 let screenSizeIsMobile = false;
 let sidebarIsOpen = false;
 const colors = ['red', 'orange', 'green', 'blue'];
-let sidebarHTML
 
 
 async function fetchCats() {
@@ -52,7 +51,7 @@ async function doWork() {
 		createDropdownMenu(rawCats.length);
 		const myCats = rawCats.slice(0, maxCats);
 		allPossibleSelectedTags = configureMyTagsArray(myCats);
-		allCards = myCats.map((rawCat, i) => createCards(rawCat, i));
+		allCards = myCats.map((rawCat, i) => createCard(rawCat, i));
 		allCheckboxes = document.getElementsByClassName("checkbox-input");
 		renderCats();
 
@@ -64,93 +63,80 @@ async function doWork() {
 doWork();
 
 function checkScreenSize() {
-	//check if we're on mobile view
-	let mediaQuery = window.matchMedia('(max-width:999px)')
+	let mediaQuery = window.matchMedia('(max-width:719px)');
 	function onScreenSizeChange(event) {
 		if(event.matches) {
-			console.log(`It's mobile`)
+			// console.log(`It's mobile`);
 			screenSizeIsMobile = true;
 		}
 		else if (!event.matches) {
-			console.log(`It's desktop`);
-			sidebar = document.querySelector(".sidebar")
-			if(sidebar) {
-				sidebar.parentNode.removeChild(sidebar)
-			}
+			// console.log(`It's desktop`);
+			sidebar = document.querySelector(".sidebar");
+			if(sidebar) { sidebar.parentNode.removeChild(sidebar) };
 			screenSizeIsMobile = false;
 		}
-		renderCats()
-	}
-	mediaQuery.addListener(onScreenSizeChange)
-	onScreenSizeChange(mediaQuery)
-}
+		renderCats();
+	};
+	mediaQuery.addListener(onScreenSizeChange);
+	onScreenSizeChange(mediaQuery);
+};
 
 function toggleSidebar() {
 	sidebar.classList.toggle("make-invisible");
-	header.classList.toggle("make-dark");
-	main.classList.toggle("make-dark");
-	footer.classList.toggle("make-dark");
+	[header, main, footer].forEach(element => element.classList.toggle("make-dark"));
 	sidebarIsOpen = !sidebarIsOpen;
-	// console.log(`Something was clicked`)
-	// console.log(`Sidebar? ${sidebarIsOpen}`)
-}
+};
 
 function onDocumentClick(event) {
-	// if(!event.target.closest(".sidebar")) {
-	// 	console.log(`Outside of sidebar was clicked`)
-	// }
-
 	if(event.target.matches(".hamburger-icon") || sidebarIsOpen && !event.target.closest(".sidebar") ) {
-		toggleSidebar()
-	}
+		toggleSidebar();
+	};
 
+	if (event.target.matches(".range-select")) {
+		// ATTENTION! event.target.value is a string
+		if(event.target.value == currentOption) {
+			console.log('// Nothing changed')
+		}
+		else { 
+			console.log('// Something changed')
+			currentOption = parseInt(event.target.value);
+			maxCats = parseInt(event.target.value);
+			// console.log(event.target[currentOption].selected)
+			// event.target[currentOption].selected = true
+			doWork();
+		};
+	};
 
 	if (event.target.closest(".checkbox-input")) {
-		const tag = event.target.id;
 		switch (event.target.checked) {
 			case true:
-				selectedTags.push(tag);
+				selectedTags.push(event.target.id);
 				break;
 			case false:
-				selectedTags = selectedTags.filter(element => element != tag);
+				selectedTags = selectedTags.filter(element => element != event.target.id);
+				break;
+		};
+		renderCats();
+	};
+
+	if (event.target.closest(".tags-clear-and-all")) {
+		switch (event.target.className) {
+			case "tags-clear":
+				selectedTags = [];
+				for (box of allCheckboxes) { box.checked = false };
+				break;
+			case "tags-all":
+				selectedTags = allPossibleSelectedTags;
+				for (box of allCheckboxes) { box.checked = true };
 				break;
 		}
-		renderCats()
-	}
-
-	if (event.target.matches(".tags-clear")) { 
-		selectedTags = [];
-		for (box of allCheckboxes) { box.checked = false };
-		renderCats()
-	}
-
-	if (event.target.matches(".tags-all")) {
-		selectedTags = allPossibleSelectedTags;
-		for (box of allCheckboxes) { box.checked = true };
-		renderCats()
-	}
-
-	// If you click on the dropdown menu, use the inputted value to alter the maxCats state variable, then reinitialize the whole cat grid content
-	// I didn't manage to make a distinction between the action of opening the dropdown #range-label element, and the action of selecting a specific <option> value. So I used this workaround as a patch. The first first time you click (to open range) it does nothing, and every other time, it takes the clicked value as input.
-
-	if (event.target.closest(".range-select")) {
-		// console.log(`.range-select was clicked`)
-		if(counter % 2) {
-			maxCats = parseInt(event.target.value)
-			doWork()
-		};
-		counter++;
-	}
-
-	else if (event.target.matches(".range-option")) {
-		console.log(`.range-option was clicked`)
+		renderCats();
 	}
 
 	if(event.target.matches(".nav")) {
-		configureNavigationActions(event)
-	}
+		configureNavigationActions(event);
+	};
 };
-
 
 
 function createDropdownMenu(totalCats) {
@@ -162,33 +148,38 @@ let explanationComment2 = {
 	let	rangeSelect = document.querySelector(".range-select");
 	rangeSelect.innerHTML = "";
 	generateValuesForDropdownMenu(totalCats, rangeSelect)
-	let	allRangeInputValues = document.querySelectorAll("option");
-	allRangeInputValues[maxCats].setAttribute('selected', true)
-}
+	let	allRangeOptions = document.querySelectorAll(".range-option");
+	currentOption = maxCats;
+	allRangeOptions[currentOption].setAttribute('selected', true);
+};
+
 
 function generateValuesForDropdownMenu(totalCats, rangeSelect) {
 		for (let i = 0; i < totalCats; i++) {
 			const newOptionInput = document.createElement("option");
 			newOptionInput.setAttribute('value', i);
 			newOptionInput.className = "range-option";
+			newOptionInput.id = `individual-option-${i}`;
 			newOptionInput.innerHTML = i;
-			rangeSelect.appendChild(newOptionInput)
-		}
-	}
+			rangeSelect.appendChild(newOptionInput);
+		};
+	};
+
 
 function configureMyTagsArray(cats) {
 	const allTagsFromCats = cats.map((cat) => cat.tags).flat();
 	const sortedTags = [...new Set(allTagsFromCats)].sort();
-	deleteAllVisibleCheckboxes()
+	deleteAllVisibleCheckboxes();
 	sortedTags.forEach(createCheckboxes);
-	return sortedTags
+	return sortedTags;
 };
 
 
 function deleteAllVisibleCheckboxes()  {
 		unorderedList = document.querySelector("ul");
 		unorderedList.innerHTML = ""
-	}
+};
+
 
 function createCheckboxes(tag) {
 		const newCheckBox = document.createElement("input");
@@ -199,16 +190,16 @@ function createCheckboxes(tag) {
 
 		const newLabel = document.createElement("label");
 		newLabel.setAttribute('for', tag)
-		newLabel.className = "checkbox-label"
+		newLabel.className = "checkbox-label";
 		newLabel.id = tag;
 		newLabel.innerText = ` ${tag}`;
 
 		const newLi = document.createElement("li");
-		newLi.classList.add("list-item")
+		newLi.classList.add("list-item");
 		newLi.appendChild(newCheckBox);
 		newLi.appendChild(newLabel);
 		unorderedList.appendChild(newLi);
-	};
+};
 
 
 function configureNavigationActions(event) {
@@ -227,13 +218,13 @@ function configureNavigationActions(event) {
 			currentIndex = allScenes.length -1;
 			break;
 	}
-
 	allScenes[currentIndex].style.display = "grid";
-	curPage.innerHTML = `  ${currentIndex + 1} `		
-}
+	curPage.innerHTML = `  ${currentIndex + 1} `;
+};
 
 
 function renderCats() {
+	// console.log(`And now is it mobile? ${screenSizeIsMobile}`);
 	deleteAllVisibleCats();
 	let selectedCards = selectedTags.length 
 		? allCards.filter((cat) => 
@@ -242,22 +233,33 @@ function renderCats() {
 			)
 		)
 		: allCards;
-	// console.log(`selectedTags:`); console.log(selectedTags); console.log(`selectedCards:`); console.log(selectedCards)
-	let curCats = selectedCards.length
-	console.log(`And now is it mobile? ${screenSizeIsMobile}`)
+	let curCats = selectedCards.length;
+	deleteAllVisibleScenes();
+	prepareScenes(selectedCards, curCats);
+};
 
+function deleteAllVisibleCats() {
+	let fixedFrame = document.getElementsByClassName("fixed-frame");
+	fixedFrame.innerHTML = "";
+};
+
+
+function deleteAllVisibleScenes() {
+	fixedFrame.innerHTML = "";
+};
+
+
+function prepareScenes(selectedCards, curCats) {
 	// x = columns; y = rows;
 	let x = 4; let y = 2; let maxFit = x * y;
 	let totalScenes = (curCats > maxFit) ? parseInt(curCats / maxFit) : 1;
-	let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
+	// let remainder = (curCats >= maxFit) ? curCats - (totalScenes * maxFit) : curCats;
 
-	deleteAllVisibleScenes()
-	// console.log(screenSizeIsMobile)
 	for (let i = 0; i <= totalScenes; i++) {
-		const slicedCardsArray = [...selectedCards.slice(0, maxFit)]
-		selectedCards = [...selectedCards.slice(maxFit)]
-		const newScene = createNewScene(slicedCardsArray, i, x, y)
-		newScene.style.display = i ? "none" : "grid"
+		const slicedCardsArray = [...selectedCards.slice(0, maxFit)];
+		selectedCards = [...selectedCards.slice(maxFit)];
+		const newScene = createNewScene(slicedCardsArray, i, x, y);
+		newScene.style.display = i ? "none" : "grid";
 
 		switch(screenSizeIsMobile) {
 			case true:
@@ -269,39 +271,36 @@ function renderCats() {
 				newScene.style.gridTemplateColumns = `repeat(${x}, 14vw)`;
 				newScene.style.gridTemplateRows = `repeat(${y}, 14vw)`;	
 				break
-		}
-		fixedFrame.appendChild(newScene)
-	} 
+		};
+		fixedFrame.appendChild(newScene);
+	};
 	const catsSection = document.querySelector('.cats-section');
 	catsSection.style.height = "fill";
-	// let a = 0;
-	curPage.innerHTML = `  1`
-	lastPage.innerHTML = `  ${(curCats > maxFit) ? totalScenes + 1 : 1}`
-}
+	curPage.innerHTML = `  1`;
+	lastPage.innerHTML = `  ${curCats > maxFit ? totalScenes + 1 : 1}`;
+};
 
-function deleteAllVisibleScenes() {
-	fixedFrame.innerHTML = ""
-}
 
 function createNewScene(cards, i, x, y) {
-	const newScene = document.createElement('div')
-	newScene.classList.add("scene")
+	const newScene = document.createElement('div');
+	newScene.classList.add("scene");
 	newScene.id = `scene-${i+1}`;
 	// newScene.style.backgroundColor = colors[i]
 
 	cards.forEach((card) => {
-		const newCard = addCardsToScene(card, newScene)
-		newScene.appendChild(newCard)
+		const newCard = addCardToScene(card, newScene);
+		newScene.appendChild(newCard);
 	});
 	const catsSection = document.querySelector('.cats-section');
-	const fixedFrame = document.querySelector('.fixed-frame')
+	const fixedFrame = document.querySelector('.fixed-frame');
 	// catsSection.style.height = "fill";
 	// fixedFrame.style.height = "fill"
 	// newScene.style.height = "fill"
-	return newScene
-}
-	 
-function addCardsToScene(cat, newScene) {
+	return newScene;
+};
+
+
+function addCardToScene(cat, newScene) {
 	const newCard = document.createElement("div");
 	newCard.classList.add("cat-card");
  
@@ -313,42 +312,35 @@ function addCardsToScene(cat, newScene) {
 	newCard.appendChild(catImage);
 	newCard.appendChild(catTitle);
 	newCard.appendChild(catText);
-	return newCard
+	return newCard;
 }
 
-function deleteAllVisibleCats() {
-	let fixedFrame = document.getElementsByClassName("fixed-frame")
-	fixedFrame.innerHTML = "";
-}
- 
-function createCards(data, i) {
+
+function createCard(data, i) {
 	const catImage = document.createElement("div");
-	catImage.classList.add("cat-image");
-
-	data.tags.forEach((tag) => {
-	// Some cats' tags starting with cat #14 have whitespace. In order to make them into HTML classes and add them to each cat card, I gotta replace the whitespace:
-		let regex = /\s/g;
-		tag = tag.replace(regex, '-')
-		catImage.classList.add(tag);
-	})
-
 	catImage.id = data.id;
+	catImage.classList.add("cat-image");
+	// Some cats' tags starting with cat #14 have whitespace. In order to make them into HTML classes and add them to each cat card, I gotta replace the whitespace:
+	data.tags.forEach((tag) => {
+		let regex = /\s/g;
+		tag = tag.replace(regex, '-');
+		catImage.classList.add(tag);
+	});
+
 	const catTitle = document.createElement("div");
 	catTitle.classList.add("cat-title");
 	const catText = document.createElement("div");
- 
 	catText.classList.add("cat-text");
 	catText.id = catImage.id;
 	catImage.style.background = `url(https://cataas.com/cat/${data.id}) 30% 40% no-repeat`;
-
 	catText.innerHTML = `Tags: <br>${data.tags.join(", ")}`;
 
 	return {
-	"id": i + 1,
-	"uniqueId": catImage.id,
-	"tags": data.tags,
-	"catImageDiv": catImage,
-	"catTitleDiv": catTitle,
-	"catTextDiv": catText
+		"id": i + 1,
+		"uniqueId": catImage.id,
+		"tags": data.tags,
+		"catImageDiv": catImage,
+		"catTitleDiv": catTitle,
+		"catTextDiv": catText
 	};
-}
+};
