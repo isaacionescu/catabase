@@ -63,7 +63,7 @@ async function doWork() {
 doWork();
 
 function checkScreenSize() {
-	let mediaQuery = window.matchMedia('(max-width:719px)');
+	let mediaQuery = window.matchMedia('(max-width:899px)');
 	function onScreenSizeChange(event) {
 		if(event.matches) {
 			// console.log(`It's mobile`);
